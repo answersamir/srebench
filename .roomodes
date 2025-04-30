@@ -1,0 +1,38 @@
+# Diglett: Root Cause Analysis (RCA) Workflow
+
+This project implements a Root Cause Analysis (RCA) workflow using LangGraph. It is designed to process system alerts, analyze potential causes, and suggest remediation steps.
+
+## Project Overview
+
+The core of the project is a StateGraph that orchestrates different agents (nodes) to perform steps in the RCA process. The workflow starts with an initial symptom and progresses through various stages of analysis and investigation.
+
+## Architecture
+
+The architecture is based on a LangGraph StateGraph, which manages the state and transitions between nodes.
+
+-   **State:** The workflow state is defined by the `RcaState` object, which holds information such as the raw symptom, parsed symptom, analysis findings, hypotheses, and the final RCA.
+-   **Nodes:** Each node in the graph represents a specific step or agent in the RCA process.
+    -   `intake`: Processes the initial raw symptom.
+    -   `strategist`: Determines the strategy for investigation based on the parsed symptom.
+    -   `executor`: Executes investigation steps, potentially using tools.
+    -   *(Future nodes may include analysts, hypothesis generation, etc.)*
+-   **Edges:** Define the transitions between nodes. Conditional edges allow for dynamic workflow paths based on the current state.
+
+## Key Components
+
+-   `src/main.py`: The main entry point of the application. It sets up the LLM, creates the RCA graph, defines the initial state, and invokes the graph execution.
+-   `src/graph.py`: Contains the `create_rca_graph` function, which defines the StateGraph, adds nodes and edges, and compiles the workflow.
+-   `src/graph_state.py`: Defines the `RcaState` object, which is the shared state passed between nodes in the graph.
+-   `src/llm_provider.py`: Handles the setup and initialization of the Language Model (LLM) used by the agents.
+-   `src/agents/`: Directory containing the implementations of the different agent nodes (`intake_agent.py`, `strategy_agent.py`, `execution_agent.py`).
+-   `src/tools/`: Directory containing implementations of tools that agents can use (e.g., `kubernetes_tool.py`).
+
+## Setup and Running
+
+*(Details on setting up the environment and running the script will be added here later, based on project requirements and dependencies like `pyproject.toml` and `uv.lock`)*
+
+## Workflow Details
+
+The current workflow starts with the `intake` node, which processes the initial symptom. It then transitions to the `strategist` node, followed by the `executor`. A conditional edge from the `executor` determines if the workflow should loop back (e.g., if user input is needed) or proceed to the end.
+
+*(More detailed workflow diagrams or descriptions can be added here as the graph becomes more complex)*
