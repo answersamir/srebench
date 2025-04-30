@@ -8,6 +8,8 @@ dependencies = [
     "langchain>=0.3.24",
     "langchain-community>=0.3.23",
     "langchain-openai>=0.3.14",
+    "pylint>=3.3.6",
     "pytest>=8.3.5",
     "pytest-mock>=3.14.0",
+    "scikit-learn>=1.6.1",
 ]

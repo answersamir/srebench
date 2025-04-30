@@ -1,0 +1,28 @@
+{
+    "test_results": {
+        "total_tests": 3,
+        "passed": 3,
+        "failed": 0,
+        "errors": 0
+    },
+    "details": [
+        {
+            "test_name": "test_root_cause_similarity",
+            "status": "Passed"
+        },
+        {
+            "test_name": "test_causal_chain_score",
+            "status": "Passed"
+        },
+        {
+            "test_name": "test_resolution_correctness",
+            "status": "Passed"
+        }
+    ],
+    "execution_time": "13.83s",
+    "environment": {
+        "python_version": "3.10.17",
+        "platform": "darwin",
+        "pytest_version": "8.3.5"
+    }
+}

@@ -1,0 +1,73 @@
+{
+    "project_name": "Sophisticated Comparison Logic Implementation",
+    "goal": "Enhance the comparison logic in 'eval_pipeline/result_comparator.py' to include semantic similarity, keyword checks, and causal chain analysis, and add appropriate test cases for the new functionality.",
+    "tasks": [
+        {
+            "taskId": "010:feat:implement_semantic_similarity",
+            "description": "Implement semantic similarity comparison logic in 'eval_pipeline/result_comparator.py'.",
+            "status": "Done",
+            "dependencies": [],
+            "delegation_details": {
+                "description": "Develop semantic similarity logic to compare agent output and ground truth.",
+                "context": {
+                    "file": "eval_pipeline/result_comparator.py",
+                    "method": "compare"
+                },
+                "acceptance_criteria": "Semantic similarity logic is implemented and integrated into the 'compare' method.",
+                "suggested_mode": "coder-monk"
+            }
+        },
+        {
+            "taskId": "020:feat:implement_keyword_checks",
+            "description": "Add keyword-based comparison logic in 'eval_pipeline/result_comparator.py'.",
+            "status": "Done",
+            "dependencies": [
+                "010:feat:implement_semantic_similarity"
+            ],
+            "delegation_details": {
+                "description": "Develop keyword matching logic to enhance comparison accuracy.",
+                "context": {
+                    "file": "eval_pipeline/result_comparator.py",
+                    "method": "compare"
+                },
+                "acceptance_criteria": "Keyword checks are implemented and integrated into the 'compare' method.",
+                "suggested_mode": "coder-monk"
+            }
+        },
+        {
+            "taskId": "030:feat:implement_causal_chain_analysis",
+            "description": "Incorporate causal chain analysis into the comparison logic in 'eval_pipeline/result_comparator.py'.",
+            "status": "Done",
+            "dependencies": [
+                "020:feat:implement_keyword_checks"
+            ],
+            "delegation_details": {
+                "description": "Develop causal chain analysis logic to compare agent output and ground truth.",
+                "context": {
+                    "file": "eval_pipeline/result_comparator.py",
+                    "method": "compare"
+                },
+                "acceptance_criteria": "Causal chain analysis is implemented and integrated into the 'compare' method.",
+                "suggested_mode": "coder-monk"
+            }
+        },
+        {
+            "taskId": "040:test:validate_comparison_logic",
+            "description": "Add test cases to validate the new comparison logic in 'tests/eval_pipeline/test_result_comparator.py'.",
+            "status": "Done",
+            "dependencies": [
+                "010:feat:implement_semantic_similarity",
+                "020:feat:implement_keyword_checks",
+                "030:feat:implement_causal_chain_analysis"
+            ],
+            "delegation_details": {
+                "description": "Develop unit tests to ensure the correctness of the new comparison logic.",
+                "context": {
+                    "file": "tests/eval_pipeline/test_result_comparator.py"
+                },
+                "acceptance_criteria": "Test cases cover all new comparison logic and pass successfully.",
+                "suggested_mode": "coder-monk"
+            }
+        }
+    ]
+}
