@@ -1,0 +1,35 @@
+# Relevant snippet from paymentservice Deployment manifest
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paymentservice
+spec:
+  selector:
+    matchLabels:
+      app: paymentservice
+  template:
+    metadata:
+      labels:
+        app: paymentservice
+    spec:
+      containers:
+      - name: server
+        image: gcr.io/google-samples/microservices-demo/paymentservice:v0.8.0 # Example image
+        ports:
+        - containerPort: 50051
+        env:
+        - name: PORT
+          value: "50051"
+        resources:
+          requests:
+            cpu: 10m      
+            memory: 64Mi
+          limits:
+            cpu: 50m      
+            memory: 128Mi
+        readinessProbe:
+          grpc:
+            port: 50051
+        livenessProbe:
+          grpc:
+            port: 50051

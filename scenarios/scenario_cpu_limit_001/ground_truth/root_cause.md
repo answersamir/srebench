@@ -1,0 +1,1 @@
+The `paymentservice` Kubernetes Deployment is configured with an overly restrictive CPU limit (`spec.template.spec.containers[0].resources.limits.cpu: 50m`). Under moderate to high load, the service's legitimate CPU usage exceeds this limit, causing the Kubernetes scheduler to throttle the container's CPU time.

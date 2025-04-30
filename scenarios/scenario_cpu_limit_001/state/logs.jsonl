@@ -1,0 +1,8 @@
+{"timestamp": "2025-04-30T14:05:15.123Z", "service": "checkoutservice", "pod": "checkoutservice-7d8fbc99-klmno", "level": "WARN", "message": "High latency detected for paymentservice call: 950ms"}
+{"timestamp": "2025-04-30T14:05:18.456Z", "service": "paymentservice", "pod": "paymentservice-abcdef12-ghijk", "level": "INFO", "message": "Processing payment request for order XXXXX"}
+{"timestamp": "2025-04-30T14:05:19.550Z", "service": "paymentservice", "pod": "paymentservice-abcdef12-ghijk", "level": "WARN", "message": "Payment processing took longer than expected: 1100ms"}
+{"timestamp": "2025-04-30T14:05:22.789Z", "service": "checkoutservice", "pod": "checkoutservice-7d8fbc99-pqrst", "level": "ERROR", "message": "Error calling paymentservice Charge RPC: deadline exceeded"}
+{"timestamp": "2025-04-30T14:05:25.999Z", "service": "frontend", "pod": "frontend-aabbccdd-uvwxy", "level": "ERROR", "message": "Checkout failed for user YYYY: Payment service unavailable"}
+{"timestamp": "2025-04-30T14:05:30.111Z", "service": "paymentservice", "pod": "paymentservice-abcdef12-ghijk", "level": "INFO", "message": "Charge request processed successfully after delay."}
+{"timestamp": "2025-04-30T14:05:33.222Z", "service": "cartservice", "pod": "cartservice-11223344-abcde", "level": "INFO", "message": "GetCart request processed for user ZZZZ"}
+{"timestamp": "2025-04-30T14:05:35.333Z", "service": "checkoutservice", "pod": "checkoutservice-7d8fbc99-klmno", "level": "WARN", "message": "paymentservice call latency p99 approaching threshold: 1200ms"}

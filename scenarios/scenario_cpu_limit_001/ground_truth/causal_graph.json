@@ -1,0 +1,15 @@
+[
+    "Low CPU limit (50m) set on paymentservice Deployment configuration",
+    "Increased user traffic/requests arrive at the frontend",
+    "Frontend calls checkoutservice to process orders",
+    "Checkoutservice calls paymentservice to handle payment",
+    "Paymentservice CPU usage increases to meet demand",
+    "Paymentservice CPU usage hits the configured limit (50m)",
+    "Kubernetes CPU manager throttles the paymentservice container",
+    "Paymentservice application threads receive less CPU time",
+    "Paymentservice request processing slows down, increasing server latency",
+    "Checkoutservice calls to paymentservice experience high latency",
+    "Some checkoutservice calls to paymentservice exceed deadlines (timeout)",
+    "Checkoutservice returns errors/high latency to the frontend",
+    "Users experience slow checkouts and payment errors via the frontend"
+]
