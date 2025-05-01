@@ -1,4 +1,10 @@
-import os
+"""
+This module provides an adapter for the BasicLLMAgent to conform to the
+AgentInterface. The adapter translates structured scenario data into a format
+suitable for the BasicLLMAgent, invokes the agent, and returns the agent's
+response in a standard structured format.
+"""
+
 from eval_pipeline.agent_interface import AgentInterface
 from basic_agent.basic_agent import BasicLLMAgent
 
@@ -6,6 +12,10 @@ from basic_agent.basic_agent import BasicLLMAgent
 class BasicLLMAgentAdapter(AgentInterface):
     """
     Adapter for BasicLLMAgent to conform to the AgentInterface.
+    This module provides an adapter for the BasicLLMAgent to conform to the
+    AgentInterface. The adapter translates structured scenario data into a format
+    suitable for the BasicLLMAgent, invokes the agent, and returns the agent's
+    response in a standard structured format.
     """
 
     def __init__(self, agent_config: dict):
@@ -48,8 +58,8 @@ class BasicLLMAgentAdapter(AgentInterface):
 
 if __name__ == "__main__":
     # Example Usage (for testing purposes)
-    # Set the OPENAI_API_KEY environment variable before running this example
-    # os.environ["OPENAI_API_KEY"] = "YOUR_API_KEY"
+    # Set the GEMINI_API_KEY environment variable before running this example
+    # os.environ["GEMINI_API_KEY"] = "YOUR_API_KEY"
 
     example_scenario_data = {
         "description": "This is a test scenario.",
@@ -61,8 +71,7 @@ if __name__ == "__main__":
     }
 
     example_agent_config = {
-        "model_name": "gpt-4o",
-        # "api_key": "sk-...", # API key should be in environment variables
+        "model_name": "gemini-2.5-flash",
     }
 
     try:
@@ -74,6 +83,4 @@ if __name__ == "__main__":
 
     except ValueError as e:
         print(f"Error: {e}")
-        print("Please set the OPENAI_API_KEY environment variable.")
-    except Exception as e:
-        print(f"An unexpected error occurred: {e}")
+        print("Please set the GEMINI_API_KEY environment variable.")

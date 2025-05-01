@@ -4,5 +4,6 @@
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
-    "pylint.cwd": "${workspaceFolder}/src"
+    "pylint.cwd": "${workspaceFolder}/src",
+    "black-formatter.cwd": "${workspaceFolder}/src"
 }

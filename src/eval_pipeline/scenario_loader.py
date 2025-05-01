@@ -1,4 +1,10 @@
+"""
+Scenario Loader Module
+"""
+
 import os
+import json
+import yaml
 
 
 class ScenarioLoader:
@@ -39,7 +45,7 @@ class ScenarioLoader:
         # Load description.md
         description_path = os.path.join(scenario_path, "description.md")
         if os.path.exists(description_path):
-            with open(description_path, "r") as f:
+            with open(description_path, "r", encoding="utf-8") as f:
                 parsed_data["description"] = f.read()
 
         # Load state files
@@ -74,7 +80,7 @@ class ScenarioLoader:
             # Example: Load root_cause.md
             root_cause_path = os.path.join(ground_truth_path, "root_cause.md")
             if os.path.exists(root_cause_path):
-                with open(root_cause_path, "r") as f:
+                with open(root_cause_path, "r", encoding="utf-8") as f:
                     parsed_data["ground_truth"]["root_cause"] = f.read()
             # Example: Load causal_graph.json
             causal_graph_path = os.path.join(ground_truth_path, "causal_graph.json")
@@ -85,7 +91,7 @@ class ScenarioLoader:
             # Example: Load resolution.md
             resolution_path = os.path.join(ground_truth_path, "resolution.md")
             if os.path.exists(resolution_path):
-                with open(resolution_path, "r") as f:
+                with open(resolution_path, "r", encoding="utf-8") as f:
                     parsed_data["ground_truth"]["resolution"] = f.read()
             # Example: Load metadata.json
             metadata_path = os.path.join(ground_truth_path, "metadata.json")
@@ -96,30 +102,27 @@ class ScenarioLoader:
 
     def _load_jsonl(self, file_path: str) -> list:
         """Loads a JSONL file."""
-        import json
 
         data = []
         if os.path.exists(file_path):
-            with open(file_path, "r") as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 for line in f:
                     data.append(json.loads(line))
         return data
 
     def _load_json(self, file_path: str) -> dict:
         """Loads a JSON file."""
-        import json
 
         if os.path.exists(file_path):
-            with open(file_path, "r") as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 return json.load(f)
         return {}
 
     def _load_yaml(self, file_path: str) -> dict:
         """Loads a YAML file."""
-        import yaml
 
         if os.path.exists(file_path):
-            with open(file_path, "r") as f:
+            with open(file_path, "r", encoding="utf-8") as f:
                 return yaml.safe_load(f)
         return {}
 

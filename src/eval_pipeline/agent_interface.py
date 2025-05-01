@@ -1,3 +1,9 @@
+"""
+agent_interface.py
+This module provides an interface for interacting with AI SRE agents.
+It defines an abstract base class `AgentInterface` and a concrete implementation
+`LLMAgentAdapter` for interacting with LLM agents."""
+
 from abc import ABC, abstractmethod
 
 
@@ -32,7 +38,6 @@ class AgentInterface(ABC):
                   root cause, causal chain, and proposed/executed resolution.
                   Expected keys: 'root_cause', 'causal_chain', 'resolution'.
         """
-        pass
 
 
 class LLMAgentAdapter(AgentInterface):

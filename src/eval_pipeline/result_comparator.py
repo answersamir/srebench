@@ -14,9 +14,7 @@ class ResultComparator:
 
     This class provides methods to calculate semantic similarity, keyword overlap,
     and causal chain similarity scores.
-    """
 
-    """
     Compares the structured output from the AgentInterface against the
     structured ground_truth/ data from the ScenarioLoader for accuracy.
     """

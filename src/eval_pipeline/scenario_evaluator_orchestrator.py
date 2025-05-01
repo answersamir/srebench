@@ -1,7 +1,14 @@
+"""
+ScenarioEvaluatorOrchestrator orchestrates the evaluation process for a single scenario.
+It calls the ScenarioLoader, passes data to the AgentInterface,
+and feeds results into the ResultComparator and EfficiencyEvaluator.
+"""
+
 from .scenario_loader import ScenarioLoader
 from .agent_interface import AgentInterface
 from .result_comparator import ResultComparator
 from .efficiency_evaluator import EfficiencyEvaluator
+from .agent_interface import LLMAgentAdapter  # Using the concrete adapter
 
 
 class ScenarioEvaluatorOrchestrator:
@@ -41,7 +48,7 @@ class ScenarioEvaluatorOrchestrator:
             scenario_id (str): The identifier of the scenario to evaluate.
 
         Returns:
-            dict: A dictionary containing all the evaluation results and scores for the specific scenario.
+            dict: A dictionary containing all the evaluation results.
         """
         print(f"Orchestrator: Starting evaluation for scenario: {scenario_id}")
         scenario_results = {"scenario_id": scenario_id}
@@ -101,10 +108,6 @@ class ScenarioEvaluatorOrchestrator:
 if __name__ == "__main__":
     # Instantiate skeleton components
     # Note: In a real application, these would be properly configured
-    from .scenario_loader import ScenarioLoader
-    from .agent_interface import LLMAgentAdapter  # Using the concrete adapter
-    from .result_comparator import ResultComparator
-    from .efficiency_evaluator import EfficiencyEvaluator
 
     # Dummy configurations
     dummy_storage_config = {"base_path": "../scenarios"}

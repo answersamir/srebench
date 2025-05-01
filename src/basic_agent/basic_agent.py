@@ -3,6 +3,7 @@ BasicLLMAgent Class
 """
 
 import os
+import json
 from langchain_google_genai import (
     ChatGoogleGenerativeAI,
 )  # Updated import for Google GenAI
@@ -67,7 +68,6 @@ class BasicLLMAgent:
         # This is a placeholder and needs proper error handling and parsing logic.
         try:
             # Assuming the LLM output is a valid JSON string
-            import json
 
             parsed_output = json.loads(llm_output_str)
             return parsed_output

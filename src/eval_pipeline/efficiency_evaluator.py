@@ -1,3 +1,7 @@
+"""
+EfficiencyEvaluator Class
+"""
+
 import time
 
 
@@ -23,7 +27,7 @@ class EfficiencyEvaluator:
 
         Args:
             agent_execution_data (dict, optional): Data related to agent execution
-                                                   (e.g., number of steps). Not used in this basic skeleton.
+            (e.g., number of steps). Not used in this basic skeleton.
 
         Returns:
             float: An efficiency score or simulated MTTR value for the scenario (in seconds).
