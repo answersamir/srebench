@@ -1,8 +1,6 @@
 import os
 from eval_pipeline.agent_interface import AgentInterface
-from basic_agent.basic_agent import (
-    BasicLLMAgent,
-)  # Assuming basic_agent.py is in the same directory
+from basic_agent.basic_agent import BasicLLMAgent
 
 
 class BasicLLMAgentAdapter(AgentInterface):
