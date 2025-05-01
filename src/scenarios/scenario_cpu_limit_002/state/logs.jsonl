@@ -1,0 +1,10 @@
+{"timestamp": "2025-05-01T10:05:15Z", "service_name": "paymentservice", "pod_name": "paymentservice-7d5bfd84d-abcde", "level": "WARN", "message": "Payment processing for transaction 12345 took longer than expected: 2500ms"}
+{"timestamp": "2025-05-01T10:05:45Z", "service_name": "checkoutservice", "pod_name": "checkoutservice-6c8f9b4d7-fghij", "level": "ERROR", "message": "Failed to process payment for order 98765: upstream timeout"}
+{"timestamp": "2025-05-01T10:06:02Z", "service_name": "paymentservice", "pod_name": "paymentservice-7d5bfd84d-abcde", "level": "INFO", "message": "Processing payment for transaction 12346"}
+{"timestamp": "2025-05-01T10:06:32Z", "service_name": "paymentservice", "pod_name": "paymentservice-7d5bfd84d-abcde", "level": "WARN", "message": "Payment processing for transaction 12346 took longer than expected: 3100ms"}
+{"timestamp": "2025-05-01T10:07:10Z", "service_name": "checkoutservice", "pod_name": "checkoutservice-6c8f9b4d7-fghij", "level": "WARN", "message": "Received slow response from paymentservice for order 98766"}
+{"timestamp": "2025-05-01T10:08:05Z", "service_name": "cartservice", "pod_name": "cartservice-5b9d7c6f8-klmno", "level": "INFO", "message": "User cart retrieved successfully for session XYZ"}
+{"timestamp": "2025-05-01T10:09:20Z", "service_name": "paymentservice", "pod_name": "paymentservice-7d5bfd84d-abcde", "level": "ERROR", "message": "Internal server error during payment authorization for transaction 12347"}
+{"timestamp": "2025-05-01T10:09:55Z", "service_name": "checkoutservice", "pod_name": "checkoutservice-6c8f9b4d7-fghij", "level": "ERROR", "message": "Payment failed for order 98767: received error from paymentservice"}
+{"timestamp": "2025-05-01T10:11:00Z", "service_name": "paymentservice", "pod_name": "paymentservice-7d5bfd84d-abcde", "level": "WARN", "message": "Request queue depth increasing, potential processing delays."}
+{"timestamp": "2025-05-01T10:12:30Z", "service_name": "checkoutservice", "pod_name": "checkoutservice-6c8f9b4d7-fghij", "level": "WARN", "message": "High latency detected communicating with paymentservice"}

@@ -1,0 +1,9 @@
+{
+    "action_type": "Update Configuration",
+    "target_component": {
+        "kind": "Deployment",
+        "name": "paymentservice",
+        "namespace": "microservices-demo"
+    },
+    "details": "Increase the CPU limit for the paymentservice container to an appropriate value (e.g., '200m' or higher based on profiling)."
+}

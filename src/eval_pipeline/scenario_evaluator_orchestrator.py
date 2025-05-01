@@ -62,6 +62,7 @@ class ScenarioEvaluatorOrchestrator:
                 "state_loaded": "state" in scenario_data,
                 "ground_truth_loaded": "ground_truth" in scenario_data,
             }
+            scenario_results["loaded_data"] = scenario_data
 
             # 2. Interact with Agent
             print("Orchestrator: Interacting with agent...")

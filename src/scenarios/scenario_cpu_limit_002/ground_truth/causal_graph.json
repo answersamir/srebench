@@ -1,0 +1,66 @@
+{
+    "nodes": [
+        {
+            "id": "config_cpu_limit",
+            "label": "Low CPU Limit (50m) on paymentservice",
+            "type": "Configuration"
+        },
+        {
+            "id": "resource_throttling",
+            "label": "paymentservice CPU Throttling",
+            "type": "ResourceState"
+        },
+        {
+            "id": "symptom_payment_latency",
+            "label": "High Latency in paymentservice",
+            "type": "Symptom"
+        },
+        {
+            "id": "symptom_checkout_latency",
+            "label": "High Latency in checkoutservice (calling paymentservice)",
+            "type": "Symptom"
+        },
+        {
+            "id": "symptom_checkout_errors",
+            "label": "Increased Errors in checkoutservice (calling paymentservice)",
+            "type": "Symptom"
+        },
+        {
+            "id": "user_impact",
+            "label": "Slow Checkouts & Payment Failures",
+            "type": "UserImpact"
+        }
+    ],
+    "edges": [
+        {
+            "source": "config_cpu_limit",
+            "target": "resource_throttling",
+            "relation": "CAUSES"
+        },
+        {
+            "source": "resource_throttling",
+            "target": "symptom_payment_latency",
+            "relation": "CAUSES"
+        },
+        {
+            "source": "symptom_payment_latency",
+            "target": "symptom_checkout_latency",
+            "relation": "CAUSES"
+        },
+        {
+            "source": "symptom_payment_latency",
+            "target": "symptom_checkout_errors",
+            "relation": "CAUSES"
+        },
+        {
+            "source": "symptom_checkout_latency",
+            "target": "user_impact",
+            "relation": "CONTRIBUTES_TO"
+        },
+        {
+            "source": "symptom_checkout_errors",
+            "target": "user_impact",
+            "relation": "CONTRIBUTES_TO"
+        }
+    ]
+}

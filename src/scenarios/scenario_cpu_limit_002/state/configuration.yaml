@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: paymentservice
+  namespace: microservices-demo
+spec:
+  selector:
+    matchLabels:
+      app: paymentservice
+  template:
+    metadata:
+      labels:
+        app: paymentservice
+    spec:
+      containers:
+      - name: server
+        image: gcr.io/google-samples/microservices-demo/paymentservice:v0.8.0 # Example image version
+        ports:
+        - containerPort: 50051
+        env:
+        - name: PORT
+          value: "50051"
+        # Other env vars omitted for brevity
+        resources:
+          requests:
+            cpu: 100m
+            memory: 64Mi
+          limits:
+            cpu: 50m
+            memory: 128Mi
+        readinessProbe:
+          exec:
+            command: ["/bin/grpc_health_probe", "-addr=:50051"]
+        livenessProbe:
+          exec:
+            command: ["/bin/grpc_health_probe", "-addr=:50051"]
+      # Other spec details omitted for brevity

@@ -71,6 +71,7 @@ def main():
         print("\n--- Evaluation Results ---")
         # Use json.dumps for pretty printing the results dictionary
         print(json.dumps(evaluation_results, indent=2))
+        print(json.dumps)
         print("--- End of Results ---")
 
     except FileNotFoundError:

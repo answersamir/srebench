@@ -1,0 +1,10 @@
+{
+    "type": "Resource Saturation",
+    "resource_type": "CPU",
+    "component": {
+        "kind": "Deployment",
+        "name": "paymentservice",
+        "namespace": "microservices-demo"
+    },
+    "details": "CPU limit configured too low (50m), leading to throttling under load."
+}

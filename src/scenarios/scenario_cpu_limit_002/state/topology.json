@@ -1,0 +1,76 @@
+[
+    {
+        "service": "frontend",
+        "namespace": "microservices-demo",
+        "calls": [
+            "checkoutservice",
+            "cartservice",
+            "productcatalogservice",
+            "recommendationservice",
+            "shippingservice",
+            "currencyservice",
+            "adservice"
+        ]
+    },
+    {
+        "service": "checkoutservice",
+        "namespace": "microservices-demo",
+        "calls": [
+            "cartservice",
+            "currencyservice",
+            "emailservice",
+            "paymentservice",
+            "productcatalogservice",
+            "shippingservice"
+        ]
+    },
+    {
+        "service": "paymentservice",
+        "namespace": "microservices-demo",
+        "calls": []
+    },
+    {
+        "service": "cartservice",
+        "namespace": "microservices-demo",
+        "calls": [
+            "redis-cart"
+        ]
+    },
+    {
+        "service": "productcatalogservice",
+        "namespace": "microservices-demo",
+        "calls": []
+    },
+    {
+        "service": "recommendationservice",
+        "namespace": "microservices-demo",
+        "calls": [
+            "productcatalogservice"
+        ]
+    },
+    {
+        "service": "shippingservice",
+        "namespace": "microservices-demo",
+        "calls": []
+    },
+    {
+        "service": "currencyservice",
+        "namespace": "microservices-demo",
+        "calls": []
+    },
+    {
+        "service": "adservice",
+        "namespace": "microservices-demo",
+        "calls": []
+    },
+    {
+        "service": "emailservice",
+        "namespace": "microservices-demo",
+        "calls": []
+    },
+    {
+        "service": "redis-cart",
+        "namespace": "microservices-demo",
+        "calls": []
+    }
+]
