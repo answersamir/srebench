@@ -6,8 +6,6 @@ from langchain_community.llms.fake import FakeListLLM
 # Add the parent directory to the path to import modules
 import sys
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../..")))
-
 from basic_agent.basic_agent import BasicLLMAgent
 from basic_agent.basic_agent_adapter import BasicLLMAgentAdapter
 from eval_pipeline.agent_interface import AgentInterface
@@ -25,7 +23,8 @@ class TestBasicLLMAgent:
 
     def test_initialization(self):
         """Test BasicLLMAgent initialization."""
-        agent = BasicLLMAgent(model_name="test-model")
+        llm = FakeListLLM(responses=["Test response"])
+        agent = BasicLLMAgent(llm=llm)
         assert agent.model is not None
         assert agent.prompt is not None
         assert agent.chain is not None
