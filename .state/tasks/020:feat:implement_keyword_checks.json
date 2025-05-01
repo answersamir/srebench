@@ -1,8 +1,0 @@
-{
-    "taskId": "020:feat:implement_keyword_checks",
-    "status": "Done",
-    "output_references": [
-        "eval_pipeline/result_comparator.py"
-    ],
-    "logs": "Integrated keyword-based comparison logic and updated the 'compare' method to return calculated scores."
-}

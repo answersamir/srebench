@@ -1,8 +1,0 @@
-{
-    "taskId": "040:test:validate_comparison_logic",
-    "status": "Done",
-    "output_references": [
-        "tests/eval_pipeline/test_result_comparator.py"
-    ],
-    "logs": "Added unit tests to validate semantic similarity, keyword checks, and causal chain analysis in 'tests/eval_pipeline/test_result_comparator.py'."
-}
