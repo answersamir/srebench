@@ -8,3 +8,15 @@ wheels/
 
 # Virtual environments
 .venv
+
+# Roo files
+.roomodes
+.roo/
+
+# State files
+.state/
+
+
+# Python cache files
+__pycache__/
+.pytest_cache/

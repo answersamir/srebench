@@ -1,8 +1,14 @@
+"""
+BasicLLMAgent Class
+"""
+
 import os
-from langchain_openai import ChatOpenAI
-from langchain.prompts import ChatPromptTemplate
+from langchain_google_genai import (
+    ChatGoogleGenerativeAI,
+)  # Updated import for Google GenAI
 from langchain.schema import StrOutputParser
 from langchain.schema.runnable import RunnablePassthrough
+from prompts.basic_agent_prompts import prompt as basic_agent_prompt
 
 
 class BasicLLMAgent:
@@ -11,51 +17,32 @@ class BasicLLMAgent:
     ground truth output (root cause, causal chain, resolution).
     """
 
-    def __init__(self, model_name: str = "gpt-4o", llm=None):
+    def _setup_llm(self, model_name: str, llm=None):
+        """Helper method to initialize the LLM."""
+        # Ensure API key is loaded from environment variables
+        if not os.getenv("GOOGLE_GENAI_API_KEY"):
+            raise ValueError("GOOGLE_GENAI_API_KEY environment variable not set.")
+        return llm or ChatGoogleGenerativeAI(model=model_name)
+
+    def __init__(self, model_name: str = "genai-1", llm=None):
         """
         Initializes the BasicLLMAgent with a specific LLM model.
 
         Args:
-            model: The LLM model to use.
-
-        Args:
-            model_name (str): The name of the LLM model to use.
+            model_name (str): The name of the LLM model to use. Defaults to "genai-1".
+            llm: An optional pre-initialized LLM instance.
         """
-        # Ensure API key is loaded from environment variables
-        if not os.getenv("OPENAI_API_KEY"):
-            raise ValueError("OPENAI_API_KEY environment variable not set.")
+        self.model = self._setup_llm(
+            model_name, llm
+        )  # Initialize LLM using helper method
 
-        self.model = llm or ChatOpenAI(model=model_name)
-
-        # Define the prompt template
-        self.prompt = ChatPromptTemplate.from_messages(
-            [
-                (
-                    "system",
-                    "You are an AI SRE agent. Analyze the provided scenario state and identify the root cause, causal chain, and resolution.",
-                ),
-                (
-                    "human",
-                    """Analyze the following scenario state and provide the root cause, causal chain, and resolution in the specified JSON format.
-
-Scenario State:
-{scenario_state}
-
-Output Format:
-{{
-  "root_cause": "string",
-  "causal_chain": ["string", "string", ...],
-  "resolution": "string"
-}}
-""",
-                ),
-            ]
-        )
+        # Use the imported prompt template
+        self.prompt = basic_agent_prompt
 
         # Define the Langchain processing chain
         self.chain = (
             {"scenario_state": RunnablePassthrough()}
-            | self.prompt
+            | self.prompt  # Use the imported prompt
             | self.model
             | StrOutputParser()
         )
@@ -96,8 +83,8 @@ Output Format:
 
 if __name__ == "__main__":
     # Example Usage (for testing purposes)
-    # Set the OPENAI_API_KEY environment variable before running this example
-    # os.environ["OPENAI_API_KEY"] = "YOUR_API_KEY"
+    # Set the GOOGLE_GENAI_API_KEY environment variable before running this example
+    # os.environ["GOOGLE_GENAI_API_KEY"] = "YOUR_API_KEY"
 
     example_scenario_state = {
         "logs": [{"timestamp": "...", "message": "CPU usage high"}],
@@ -112,4 +99,4 @@ if __name__ == "__main__":
         print(results)
     except ValueError as e:
         print(f"Error: {e}")
-        print("Please set the OPENAI_API_KEY environment variable.")
+        print("Please set the GOOGLE_GENAI_API_KEY environment variable.")

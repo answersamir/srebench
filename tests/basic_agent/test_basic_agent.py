@@ -16,7 +16,7 @@ from eval_pipeline.agent_interface import AgentInterface
 # Mock the environment variable for API key during testing
 @pytest.fixture(autouse=True)
 def mock_env_vars():
-    with patch.dict(os.environ, {"OPENAI_API_KEY": "dummy_key"}):
+    with patch.dict(os.environ, {"GOOGLE_GENAI_API_KEY": "dummy_key"}):
         yield
 
 

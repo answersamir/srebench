@@ -1,71 +1,88 @@
 {
-    "project_name": "Sophisticated Comparison Logic Implementation",
-    "goal": "Enhance the comparison logic in 'eval_pipeline/result_comparator.py' to include semantic similarity, keyword checks, and causal chain analysis, and add appropriate test cases for the new functionality.",
+    "project_name": "srebench",
+    "goal": "Move prompts inside 'basic_agent/basic_agent.py' to separate file and import them.",
     "tasks": [
         {
-            "taskId": "010:feat:implement_semantic_similarity",
-            "description": "Implement semantic similarity comparison logic in 'eval_pipeline/result_comparator.py'.",
-            "status": "Done",
+            "taskId": "010:chore:create_prompt_file",
+            "description": "Create a new Python file (e.g., basic_agent/prompts.py) to store the prompt strings.",
+            "status": "Pending",
             "dependencies": [],
             "delegation_details": {
-                "description": "Develop semantic similarity logic to compare agent output and ground truth.",
+                "description": "Create a new file named `prompts.py` within the `basic_agent` directory.",
                 "context": {
-                    "file": "eval_pipeline/result_comparator.py",
-                    "method": "compare"
+                    "target_directory": "basic_agent/"
                 },
-                "acceptance_criteria": "Semantic similarity logic is implemented and integrated into the 'compare' method.",
+                "acceptance_criteria": "An empty file named `basic_agent/prompts.py` exists.",
                 "suggested_mode": "coder-monk"
             }
         },
         {
-            "taskId": "020:feat:implement_keyword_checks",
-            "description": "Add keyword-based comparison logic in 'eval_pipeline/result_comparator.py'.",
-            "status": "Done",
+            "taskId": "020:chore:extract_prompts",
+            "description": "Extract the system and human prompt strings from basic_agent.py and place them as constants in basic_agent/prompts.py.",
+            "status": "Pending",
             "dependencies": [
-                "010:feat:implement_semantic_similarity"
+                "010:chore:create_prompt_file"
             ],
             "delegation_details": {
-                "description": "Develop keyword matching logic to enhance comparison accuracy.",
+                "description": "Identify the system and human message strings within the `ChatPromptTemplate.from_messages` call in `basic_agent/basic_agent.py`. Move these strings into constants (e.g., `SYSTEM_PROMPT`, `HUMAN_PROMPT`) within the newly created `basic_agent/prompts.py` file.",
                 "context": {
-                    "file": "eval_pipeline/result_comparator.py",
-                    "method": "compare"
+                    "source_file": "basic_agent/basic_agent.py",
+                    "target_file": "basic_agent/prompts.py",
+                    "lines_to_extract_from": [
+                        43,
+                        44,
+                        45,
+                        47,
+                        48,
+                        49,
+                        50,
+                        51,
+                        52,
+                        53,
+                        54,
+                        55,
+                        56,
+                        57,
+                        58,
+                        59
+                    ]
                 },
-                "acceptance_criteria": "Keyword checks are implemented and integrated into the 'compare' method.",
+                "acceptance_criteria": "`basic_agent/prompts.py` contains the extracted prompt strings as constants. The original strings are removed from `basic_agent.py` (the `ChatPromptTemplate` call will be updated in the next step).",
                 "suggested_mode": "coder-monk"
             }
         },
         {
-            "taskId": "030:feat:implement_causal_chain_analysis",
-            "description": "Incorporate causal chain analysis into the comparison logic in 'eval_pipeline/result_comparator.py'.",
-            "status": "Done",
+            "taskId": "030:chore:update_agent_imports",
+            "description": "Update basic_agent.py to import the prompt constants from basic_agent/prompts.py and use them in the ChatPromptTemplate.",
+            "status": "Pending",
             "dependencies": [
-                "020:feat:implement_keyword_checks"
+                "020:chore:extract_prompts"
             ],
             "delegation_details": {
-                "description": "Develop causal chain analysis logic to compare agent output and ground truth.",
+                "description": "Modify `basic_agent/basic_agent.py` to import the prompt constants (e.g., `SYSTEM_PROMPT`, `HUMAN_PROMPT`) from `basic_agent.prompts`. Update the `ChatPromptTemplate.from_messages` call to use these imported constants instead of the literal strings.",
                 "context": {
-                    "file": "eval_pipeline/result_comparator.py",
-                    "method": "compare"
+                    "file_to_update": "basic_agent/basic_agent.py",
+                    "prompt_module": "basic_agent.prompts"
                 },
-                "acceptance_criteria": "Causal chain analysis is implemented and integrated into the 'compare' method.",
+                "acceptance_criteria": "`basic_agent.py` successfully imports and uses the prompt constants from `basic_agent/prompts.py`. The agent should function identically to before the refactoring.",
                 "suggested_mode": "coder-monk"
             }
         },
         {
-            "taskId": "040:test:validate_comparison_logic",
-            "description": "Add test cases to validate the new comparison logic in 'tests/eval_pipeline/test_result_comparator.py'.",
-            "status": "Done",
+            "taskId": "040:test:add_prompt_tests",
+            "description": "Add unit tests to verify the prompt loading and structure.",
+            "status": "Pending",
             "dependencies": [
-                "010:feat:implement_semantic_similarity",
-                "020:feat:implement_keyword_checks",
-                "030:feat:implement_causal_chain_analysis"
+                "030:chore:update_agent_imports"
             ],
             "delegation_details": {
-                "description": "Develop unit tests to ensure the correctness of the new comparison logic.",
+                "description": "Create or update test files (e.g., in `tests/basic_agent/`) to ensure the prompts are loaded correctly and the `ChatPromptTemplate` in `BasicLLMAgent` is constructed as expected using the imported prompts.",
                 "context": {
-                    "file": "tests/eval_pipeline/test_result_comparator.py"
+                    "test_directory": "tests/basic_agent/",
+                    "agent_file": "basic_agent/basic_agent.py",
+                    "prompts_file": "basic_agent/prompts.py"
                 },
-                "acceptance_criteria": "Test cases cover all new comparison logic and pass successfully.",
+                "acceptance_criteria": "Unit tests exist and pass, verifying the correct instantiation and content of the prompt template in `BasicLLMAgent` after the refactoring.",
                 "suggested_mode": "coder-monk"
             }
         }
