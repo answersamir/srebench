@@ -2,11 +2,7 @@
 BasicLLMAgent Class
 """
 
-import os
 import json
-from langchain_google_genai import (
-    ChatGoogleGenerativeAI,
-)  # Updated import for Google GenAI
 from langchain.schema import StrOutputParser
 from langchain.schema.runnable import RunnablePassthrough
 from prompts.basic_agent_prompts import prompt as basic_agent_prompt
@@ -18,24 +14,14 @@ class BasicLLMAgent:
     ground truth output (root cause, causal chain, resolution).
     """
 
-    def _setup_llm(self, model_name: str, llm=None):
-        """Helper method to initialize the LLM."""
-        # Ensure API key is loaded from environment variables
-        if not os.getenv("GOOGLE_GENAI_API_KEY"):
-            raise ValueError("GOOGLE_GENAI_API_KEY environment variable not set.")
-        return llm or ChatGoogleGenerativeAI(model=model_name)
-
-    def __init__(self, model_name: str = "genai-1", llm=None):
+    def __init__(self, llm=None):
         """
         Initializes the BasicLLMAgent with a specific LLM model.
 
         Args:
-            model_name (str): The name of the LLM model to use. Defaults to "genai-1".
-            llm: An optional pre-initialized LLM instance.
+            llm: A pre-initialized LLM instance.
         """
-        self.model = self._setup_llm(
-            model_name, llm
-        )  # Initialize LLM using helper method
+        self.model = llm
 
         # Use the imported prompt template
         self.prompt = basic_agent_prompt
@@ -67,7 +53,11 @@ class BasicLLMAgent:
         # TODO: Implement robust parsing of the LLM output string into the desired JSON format.
         # This is a placeholder and needs proper error handling and parsing logic.
         try:
-            # Assuming the LLM output is a valid JSON string
+            # Clean potential markdown code fences
+            if llm_output_str.startswith("```json"):
+                llm_output_str = llm_output_str.strip()[7:-3].strip()
+            elif llm_output_str.startswith("```"):
+                llm_output_str = llm_output_str.strip()[3:-3].strip()
 
             parsed_output = json.loads(llm_output_str)
             return parsed_output

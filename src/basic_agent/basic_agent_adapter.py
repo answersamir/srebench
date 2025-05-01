@@ -7,6 +7,7 @@ response in a standard structured format.
 
 from eval_pipeline.agent_interface import AgentInterface
 from basic_agent.basic_agent import BasicLLMAgent
+import llm_provider
 
 
 class BasicLLMAgentAdapter(AgentInterface):
@@ -27,8 +28,8 @@ class BasicLLMAgentAdapter(AgentInterface):
                                  Expected to contain 'model_name'.
         """
         super().__init__(agent_config)
-        model_name = self.agent_config.get("model_name", "gpt-4o")
-        self.basic_agent = BasicLLMAgent(model_name=model_name)
+        llm = agent_config.get("llm")
+        self.basic_agent = BasicLLMAgent(llm=llm)
 
     def interact_with_agent(self, scenario_data: dict) -> dict:
         """
@@ -71,7 +72,7 @@ if __name__ == "__main__":
     }
 
     example_agent_config = {
-        "model_name": "gemini-2.5-flash",
+        "llm": llm_provider.setup_llm(),
     }
 
     try:
