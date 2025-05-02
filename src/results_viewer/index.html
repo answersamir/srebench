@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SREBench Run Results Viewer</title>
+    <link rel="stylesheet" href="style.css">
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <link href="https://unpkg.com/vis-network/styles/vis-network.min.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+    <h1>SREBench Run Results Viewer</h1>
+
+    <div class="controls">
+        <label for="run-input">Select Benchmark Run Directory:</label>
+        <input type="file" id="run-input" webkitdirectory directory multiple>
+        <p class="help-text">Select the parent folder containing scenario subfolders (e.g., '20250502_232815').</p>
+    </div>
+
+    <div id="run-summary" class="summary-section">
+        <h2>Run Summary</h2>
+        <p>No run selected.</p>
+    </div>
+
+    <div id="results-display" class="results-section">
+        <h2>Scenario Details</h2>
+        <p>Select a run directory to view results.</p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
