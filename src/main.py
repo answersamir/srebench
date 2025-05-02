@@ -3,14 +3,16 @@ Main entry point for the SRE Benchmark evaluation pipeline.
 """
 
 import json
+import logging
 import os
-from eval_pipeline.scenario_loader import ScenarioLoader
+
 from basic_agent.basic_agent_adapter import BasicLLMAgentAdapter
-from eval_pipeline.result_comparator import ResultComparator
 from eval_pipeline.efficiency_evaluator import EfficiencyEvaluator
+from eval_pipeline.result_comparator import ResultComparator
 from eval_pipeline.scenario_evaluator_orchestrator import (
     ScenarioEvaluatorOrchestrator,
 )
+from eval_pipeline.scenario_loader import ScenarioLoader
 import llm_provider
 
 # Define the base path for scenarios relative to the project root
@@ -25,6 +27,7 @@ def main():
     and prints the results.
     """
     print("Starting SRE Benchmark Evaluation Pipeline...")
+    logging.basicConfig(level=logging.INFO, format="%(levelname)s:%(name)s:%(message)s")
 
     # --- Configuration ---
     # Ensure the base path is correct relative to the project root
@@ -58,7 +61,7 @@ def main():
     # --- Scenario Selection ---
     # TODO: Implement logic to dynamically select or iterate through scenarios.
     # Using a default scenario ID for this example.
-    scenario_id_to_evaluate = "scenario_cpu_limit_001"
+    scenario_id_to_evaluate = "scenario_cpu_limit_002"
     print(f"Selected scenario for evaluation: {scenario_id_to_evaluate}")
 
     # --- Run Evaluation ---

@@ -78,21 +78,24 @@ class ScenarioLoader:
         if os.path.exists(ground_truth_path):
             parsed_data["ground_truth"] = {}
             # Example: Load root_cause.md
-            root_cause_path = os.path.join(ground_truth_path, "root_cause.md")
+            root_cause_path = os.path.join(ground_truth_path, "root_cause.json")
             if os.path.exists(root_cause_path):
-                with open(root_cause_path, "r", encoding="utf-8") as f:
-                    parsed_data["ground_truth"]["root_cause"] = f.read()
+                parsed_data["ground_truth"]["root_cause"] = self._load_json(
+                    root_cause_path
+                )
             # Example: Load causal_graph.json
             causal_graph_path = os.path.join(ground_truth_path, "causal_graph.json")
             if os.path.exists(causal_graph_path):
                 parsed_data["ground_truth"]["causal_graph"] = self._load_json(
                     causal_graph_path
                 )
-            # Example: Load resolution.md
-            resolution_path = os.path.join(ground_truth_path, "resolution.md")
+            # Example: Load resolution.json
+            resolution_path = os.path.join(ground_truth_path, "resolution.json")
             if os.path.exists(resolution_path):
-                with open(resolution_path, "r", encoding="utf-8") as f:
-                    parsed_data["ground_truth"]["resolution"] = f.read()
+                parsed_data["ground_truth"]["resolution"] = self._load_json(
+                    resolution_path
+                )
+
             # Example: Load metadata.json
             metadata_path = os.path.join(ground_truth_path, "metadata.json")
             if os.path.exists(metadata_path):

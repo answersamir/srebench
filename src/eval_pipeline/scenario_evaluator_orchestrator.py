@@ -68,10 +68,10 @@ class ScenarioEvaluatorOrchestrator:
             print("Orchestrator: Interacting with agent...")
             self.efficiency_evaluator.start_timer()  # Start timer before agent interaction
             agent_output = self.agent_interface.interact_with_agent(scenario_data)
+            # Stop timer and get score immediately after agent interaction
+            efficiency_score = self.efficiency_evaluator.stop_timer_and_evaluate()
             scenario_results["agent_output"] = agent_output
-            simulated_agent_execution_data = {
-                "time_taken": self.efficiency_evaluator.stop_timer_and_evaluate()
-            }  # Stop timer
+            # simulated_agent_execution_data removed as evaluate_efficiency should use internal state
 
             # 3. Compare Results
             print("Orchestrator: Comparing agent output with ground truth...")
@@ -89,9 +89,7 @@ class ScenarioEvaluatorOrchestrator:
 
             # 4. Evaluate Efficiency
             print("Orchestrator: Evaluating efficiency...")
-            efficiency_score = self.efficiency_evaluator.stop_timer_and_evaluate(
-                simulated_agent_execution_data
-            )  # Use the duration captured earlier
+            # Efficiency score was obtained when timer was stopped (line 71)
             scenario_results["efficiency_score"] = efficiency_score
 
         except FileNotFoundError as e:
