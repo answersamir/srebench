@@ -21,3 +21,7 @@ wheels/
 # Python cache files
 __pycache__/
 .pytest_cache/
+
+# Bench runs
+src/bench_runs/
+bench_runs/

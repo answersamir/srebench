@@ -4,11 +4,14 @@ It calls the ScenarioLoader, passes data to the AgentInterface,
 and feeds results into the ResultComparator and EfficiencyEvaluator.
 """
 
+import json
+
 from .scenario_loader import ScenarioLoader
 from .agent_interface import AgentInterface
 from .result_comparator import ResultComparator
 from .efficiency_evaluator import EfficiencyEvaluator
 from .agent_interface import LLMAgentAdapter  # Using the concrete adapter
+from .evaluation_writer import ScenarioEvaluationWriter
 
 
 class ScenarioEvaluatorOrchestrator:
@@ -25,6 +28,7 @@ class ScenarioEvaluatorOrchestrator:
         agent_interface: AgentInterface,
         result_comparator: ResultComparator,
         efficiency_evaluator: EfficiencyEvaluator,
+        evaluation_writer: ScenarioEvaluationWriter,
     ):
         """
         Initializes the ScenarioEvaluatorOrchestrator with instances of other components.
@@ -34,11 +38,13 @@ class ScenarioEvaluatorOrchestrator:
             agent_interface (AgentInterface): Instance of the AgentInterface.
             result_comparator (ResultComparator): Instance of the ResultComparator.
             efficiency_evaluator (EfficiencyEvaluator): Instance of the EfficiencyEvaluator.
+            evaluation_writer (ScenarioEvaluationWriter): Instance of the EvaluationWriter.
         """
         self.scenario_loader = scenario_loader
         self.agent_interface = agent_interface
         self.result_comparator = result_comparator
         self.efficiency_evaluator = efficiency_evaluator
+        self.evaluation_writer = evaluation_writer
 
     def evaluate_scenario(self, scenario_id: str) -> dict:
         """
@@ -64,14 +70,32 @@ class ScenarioEvaluatorOrchestrator:
             }
             scenario_results["loaded_data"] = scenario_data
 
-            # 2. Interact with Agent
+            # 2. Setup Scenario Directory and Interact with Agent
+            print("Orchestrator: Setting up scenario directory...")
+            self.evaluation_writer.setup_scenario_dir(scenario_id)
+
             print("Orchestrator: Interacting with agent...")
             self.efficiency_evaluator.start_timer()  # Start timer before agent interaction
             agent_output = self.agent_interface.interact_with_agent(scenario_data)
             # Stop timer and get score immediately after agent interaction
             efficiency_score = self.efficiency_evaluator.stop_timer_and_evaluate()
             scenario_results["agent_output"] = agent_output
-            # simulated_agent_execution_data removed as evaluate_efficiency should use internal state
+
+            # Write agent output (considered ground truth for this run)
+            print("Orchestrator: Writing agent output...")
+            try:
+                agent_output_content = json.dumps(agent_output, indent=2)
+                self.evaluation_writer.write_ground_truth(
+                    scenario_id, "agent_output.json", agent_output_content
+                )
+            except TypeError as e:
+                print(
+                    f"Orchestrator Warning: Could not serialize agent output to JSON: {e}"
+                )
+                # Fallback: Write as string representation
+                self.evaluation_writer.write_ground_truth(
+                    scenario_id, "agent_output.txt", str(agent_output)
+                )
 
             # 3. Compare Results
             print("Orchestrator: Comparing agent output with ground truth...")
@@ -100,6 +124,11 @@ class ScenarioEvaluatorOrchestrator:
             scenario_results["error"] = str(e)
 
         print(f"Orchestrator: Finished evaluation for scenario: {scenario_id}")
+
+        # 5. Write Final Results
+        print("Orchestrator: Writing final results...")
+        self.evaluation_writer.write_results(scenario_id, scenario_results)
+
         return scenario_results
 
 
@@ -109,7 +138,7 @@ if __name__ == "__main__":
     # Note: In a real application, these would be properly configured
 
     # Dummy configurations
-    dummy_storage_config = {"base_path": "../scenarios"}
+    dummy_storage_config = {"base_path": "src/scenarios"}  # Relative to workspace root
     dummy_agent_config = {"model_name": "dummy"}
 
     # Instantiate components
@@ -117,6 +146,7 @@ if __name__ == "__main__":
     agent_adapter = LLMAgentAdapter(agent_config=dummy_agent_config)
     comparator = ResultComparator()
     evaluator = EfficiencyEvaluator()
+    writer = ScenarioEvaluationWriter(base_dir="bench_runs")  # Instantiate writer
 
     # Instantiate orchestrator
     orchestrator = ScenarioEvaluatorOrchestrator(
@@ -124,14 +154,15 @@ if __name__ == "__main__":
         agent_interface=agent_adapter,
         result_comparator=comparator,
         efficiency_evaluator=evaluator,
+        evaluation_writer=writer,  # Pass writer
     )
 
     # Run evaluation for a dummy scenario ID
-    # Make sure 'scenario_cpu_limit_001' exists in the '../scenarios' directory for this to work
-    scenario_id_to_evaluate = "scenario_cpu_limit_001"
+    # Use scenario_cpu_limit_002 as it exists in the provided file list
+    scenario_id_to_evaluate = "scenario_cpu_limit_002"
     evaluation_results = orchestrator.evaluate_scenario(scenario_id_to_evaluate)
 
     print("\nSingle Scenario Evaluation Results:")
-    import json
+    import json  # Keep import here for standalone execution
 
     print(json.dumps(evaluation_results, indent=2))

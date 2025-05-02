@@ -7,6 +7,7 @@ import logging
 import os
 
 from basic_agent.basic_agent_adapter import BasicLLMAgentAdapter
+from eval_pipeline.evaluation_writer import ScenarioEvaluationWriter
 from eval_pipeline.efficiency_evaluator import EfficiencyEvaluator
 from eval_pipeline.result_comparator import ResultComparator
 from eval_pipeline.scenario_evaluator_orchestrator import (
@@ -44,12 +45,14 @@ def main():
         agent_adapter = BasicLLMAgentAdapter(agent_config=agent_config)
         comparator = ResultComparator()
         evaluator = EfficiencyEvaluator()
+        evaluation_writer = ScenarioEvaluationWriter(base_dir="bench_runs")
 
         orchestrator = ScenarioEvaluatorOrchestrator(
             scenario_loader=loader,
             agent_interface=agent_adapter,
             result_comparator=comparator,
             efficiency_evaluator=evaluator,
+            evaluation_writer=evaluation_writer,
         )
         print("Components initialized successfully.")
 
