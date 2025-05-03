@@ -181,7 +181,7 @@ class TestScenarioLoader(unittest.TestCase):
     def test_load_jsonl_empty(self):
         """Test loading an empty JSONL file."""
         empty_jsonl_path = os.path.join(self.test_dir, "empty.jsonl")
-        with open(empty_jsonl_path, "w") as f:
+        with open(empty_jsonl_path, "w"):
             pass  # Create an empty file
 
         loader = ScenarioLoader(storage_config={"base_path": self.scenarios_base_path})
@@ -205,7 +205,7 @@ class TestScenarioLoader(unittest.TestCase):
     def test_load_yaml_empty(self):
         """Test loading an empty YAML file."""
         empty_yaml_path = os.path.join(self.test_dir, "empty.yaml")
-        with open(empty_yaml_path, "w") as f:
+        with open(empty_yaml_path, "w"):
             pass  # Create an empty file
 
         loader = ScenarioLoader(storage_config={"base_path": self.scenarios_base_path})

@@ -7,17 +7,10 @@ import json
 import yaml
 import io
 from typing import Dict, Any, List, Optional
-
-# Removed duplicate import: from typing import Dict, Any, List
 import logging  # Added for logging
-
 import os
 from flask import Flask, request, jsonify, send_from_directory
-
-# Import the refactored initialization function
 from .main import initialize_evaluation_components
-
-# No longer need the standalone import alias
 
 app = Flask(__name__)
 
