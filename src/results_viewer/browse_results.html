@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse SREBench Run Results</title>
+    <link rel="stylesheet" href="/custom/common_styles.css">
+    <link rel="stylesheet" href="/custom/style.css"> <!-- Reusing style.css for results display -->
+<link href="https://unpkg.com/vis-network/styles/vis-network.min.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Browse Benchmark Run Results</h1>
+    </header>
+
+    <main>
+        <section id="run-selection">
+            <h2>Select a Run</h2>
+            <select id="run-select">
+                <option value="">-- Select a previous run --</option>
+                <!-- Run options will be populated dynamically -->
+            </select>
+            <p id="loading-status"></p>
+        </section>
+
+        <hr>
+
+        <section id="run-summary">
+            <h2>Run Summary</h2>
+            <div id="summary-content">
+                <!-- Summary will be loaded here -->
+                <p>Select a run to view its summary.</p>
+            </div>
+        </section>
+
+        <hr>
+
+        <section id="results-display">
+            <h2>Detailed Scenario Results</h2>
+            <div id="scenarios-content">
+                <!-- Detailed results will be loaded here -->
+                <p>Select a run to view detailed results.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>SREBench Results Viewer</p>
+    </footer>
+
+    <script src="/custom/utils.js"></script>
+    <script src="/custom/browse_results_script.js"></script>
+</body>
+</html>

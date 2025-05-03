@@ -80,22 +80,6 @@ class ScenarioEvaluatorOrchestrator:
             efficiency_score = self.efficiency_evaluator.stop_timer_and_evaluate()
             scenario_results["agent_output"] = agent_output
 
-            # Write agent output (considered ground truth for this run)
-            print("Orchestrator: Writing agent output...")
-            try:
-                agent_output_content = json.dumps(agent_output, indent=2)
-                self.evaluation_writer.write_ground_truth(
-                    scenario_id, "agent_output.json", agent_output_content
-                )
-            except TypeError as e:
-                print(
-                    f"Orchestrator Warning: Could not serialize agent output to JSON: {e}"
-                )
-                # Fallback: Write as string representation
-                self.evaluation_writer.write_ground_truth(
-                    scenario_id, "agent_output.txt", str(agent_output)
-                )
-
             # 3. Compare Results
             print("Orchestrator: Comparing agent output with ground truth...")
             if "ground_truth" in scenario_data:
@@ -178,21 +162,6 @@ class ScenarioEvaluatorOrchestrator:
             agent_output = self.agent_interface.interact_with_agent(scenario_data)
             efficiency_score = self.efficiency_evaluator.stop_timer_and_evaluate()
             scenario_results["agent_output"] = agent_output
-
-            # Write agent output
-            print("Orchestrator: Writing agent output...")
-            try:
-                agent_output_content = json.dumps(agent_output, indent=2)
-                self.evaluation_writer.write_ground_truth(
-                    custom_scenario_name, "agent_output.json", agent_output_content
-                )
-            except TypeError as e:
-                print(
-                    f"Orchestrator Warning: Could not serialize agent output to JSON: {e}"
-                )
-                self.evaluation_writer.write_ground_truth(
-                    custom_scenario_name, "agent_output.txt", str(agent_output)
-                )
 
             # 3. Compare Results
             print("Orchestrator: Comparing agent output with ground truth...")
