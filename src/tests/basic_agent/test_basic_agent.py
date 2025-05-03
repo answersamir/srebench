@@ -4,7 +4,6 @@ from unittest.mock import patch, MagicMock
 from langchain_community.llms.fake import FakeListLLM
 
 # Add the parent directory to the path to import modules
-import sys
 
 from basic_agent.basic_agent import BasicLLMAgent
 from basic_agent.basic_agent_adapter import BasicLLMAgentAdapter
@@ -20,7 +19,6 @@ def mock_env_vars():
 
 # Test cases for BasicLLMAgent
 class TestBasicLLMAgent:
-
     def test_initialization(self):
         """Test BasicLLMAgent initialization."""
         llm = FakeListLLM(responses=["Test response"])
@@ -63,7 +61,6 @@ class TestBasicLLMAgent:
 
 # Test cases for BasicLLMAgentAdapter
 class TestBasicLLMAgentAdapter:
-
     @patch("basic_agent.basic_agent_adapter.BasicLLMAgent")
     def test_initialization(self, MockBasicLLMAgent):
         """Test BasicLLMAgentAdapter initialization."""

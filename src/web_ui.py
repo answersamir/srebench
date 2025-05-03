@@ -17,9 +17,6 @@ from flask import Flask, request, jsonify, send_from_directory
 # Import the refactored initialization function
 from .main import initialize_evaluation_components
 
-# Import the orchestrator class to handle potential exceptions during init
-from .eval_pipeline.scenario_evaluator_orchestrator import ScenarioEvaluatorOrchestrator
-
 # No longer need the standalone import alias
 
 app = Flask(__name__)
