@@ -1,0 +1,132 @@
+/* Specific styles for custom_scenario.html */
+
+/* Overrides or additions specific to the custom scenario page */
+
+h1, h2 {
+    color: #333; /* Specific H1/H2 color for this page */
+}
+
+#scenario-form {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    /* Removed flex properties */
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+textarea {
+    width: 95%; /* Slightly less than 100% to prevent overflow */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-family: monospace; /* Good for code/JSON */
+    font-size: 0.9em;
+    resize: vertical; /* Allow vertical resizing */
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+#status-message {
+    margin-top: 20px;
+    font-weight: bold;
+    padding: 10px;
+    border-radius: 4px;
+}
+
+#status-message:empty {
+    display: none; /* Hide if empty */
+}
+
+/* --- Specific styles for results display on this page --- */
+
+/* Override common styles if needed, e.g., graph height */
+.graph-container {
+    height: 450px; /* Specific height for custom page */
+}
+
+/* Remove the dashed border between scenario details if only one result is shown */
+.scenario-details {
+    border-bottom: none;
+}
+
+
+/* Style for the scenario selector dropdown */
+.autofill-section { /* Container for the dropdown */
+     margin-bottom: 20px;
+     padding-bottom: 15px;
+     border-bottom: 1px solid #eee; /* Separator */
+}
+
+#scenario-select {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 1rem;
+    /* margin-bottom: 15px; */ /* Removed, spacing handled by container */
+    min-width: 200px; /* Ensure it has a reasonable minimum width */
+    cursor: pointer;
+}
+
+/* Optional: Style on hover/focus */
+#scenario-select:hover {
+    border-color: #aaa;
+}
+
+#scenario-select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+}
+
+/* Container for form and results */
+.main-content-area {
+    /* Removed flex properties for vertical layout */
+    margin-top: 20px; /* Space above the container */
+}
+
+
+/* Specific adjustments for results display on this page */
+#results-display {
+    /* Removed flex properties */
+    border: 1px solid #eee; /* Optional: Add border for visual separation */
+    padding: 15px;
+    background-color: #f9f9f9; /* Optional: Background color */
+    margin-top: 20px; /* Ensure space between form and results */
+}
+
+/* Ensure the graph container inside results fills its space */
+#results-display .graph-container { /* More specific selector */
+    width: 100%;
+    height: 400px; /* Adjust height as needed */
+    border: 1px solid #ddd; /* Keep border */
+}

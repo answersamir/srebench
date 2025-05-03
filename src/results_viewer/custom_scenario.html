@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Submit Custom Scenario</title>
+    <!-- Include Vis Network library -->
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <link href="https://unpkg.com/vis-network/styles/vis-network.min.css" rel="stylesheet" type="text/css" />
+    <!-- Link custom CSS -->
+<link rel="stylesheet" href="/custom/common_styles.css">
+    <link rel="stylesheet" href="/custom/custom_style.css">
+</head>
+<body>
+    <h1>Submit Custom Scenario for Evaluation</h1>
+
+<div class="form-group autofill-section">
+        <label for="scenario-select">Autofill from existing scenario:</label>
+        <select id="scenario-select">
+            <option value="">-- Select a scenario --</option>
+        </select>
+    </div>
+    <hr> <!-- Optional separator -->
+    <div class="main-content-area"> <!-- New container for horizontal layout -->
+        <form id="scenario-form">
+        <div class="form-group">
+            <label for="description">Scenario Description:</label>
+            <textarea id="description" name="description" rows="4" required></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="metadata">Scenario Metadata (JSON):</label>
+            <textarea id="metadata" name="metadata" rows="4" required>{}</textarea>
+        </div>
+
+        <h2>State Files</h2>
+        <div class="form-group">
+            <label for="logs">State: logs.jsonl</label>
+            <textarea id="logs" name="logs" rows="6" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="metrics">State: metrics.json</label>
+            <textarea id="metrics" name="metrics" rows="6" required>{}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="topology">State: topology.json</label>
+            <textarea id="topology" name="topology" rows="6" required>{}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="configuration">State: configuration.yaml</label>
+            <textarea id="configuration" name="configuration" rows="6" required></textarea>
+        </div>
+
+        <h2>Ground Truth Files</h2>
+        <div class="form-group">
+            <label for="causal_graph">Ground Truth: causal_graph.json</label>
+            <textarea id="causal_graph" name="causal_graph" rows="6" required>{}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="resolution">Ground Truth: resolution.json</label>
+            <textarea id="resolution" name="resolution" rows="6" required>{}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="root_cause">Ground Truth: root_cause.json</label>
+            <textarea id="root_cause" name="root_cause" rows="6" required>{}</textarea>
+        </div>
+
+        <button type="submit" id="submit-button">Submit Evaluation</button>
+    </form>
+
+    <div id="status-message"></div>
+    <!-- Results will be displayed here by custom_script.js -->
+    <div id="results-display">
+        <h2>Evaluation Result:</h2>
+        <!-- Content will be dynamically inserted here -->
+        </div>
+    </div> <!-- Close main-content-area -->
+
+<script src="/custom/utils.js"></script>
+    <script src="/custom/custom_script.js"></script>
+</body>
+</html>

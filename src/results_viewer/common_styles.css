@@ -1,0 +1,153 @@
+/* Common styles shared between index.html and custom_scenario.html */
+
+body {
+    font-family: sans-serif;
+    margin: 20px;
+    background-color: #f4f4f4;
+    color: #333; /* Added from style.css for consistency */
+}
+
+/* Common container for results */
+#results-display {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#results-display h2 { /* Common style for the main results heading */
+    margin-top: 0;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    color: #0056b3;
+}
+
+
+.scenario-details {
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 1px dashed #ccc; /* Default from style.css */
+}
+
+.scenario-details:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+/* Common styling for result subsections */
+.root-cause-section,
+.resolution-section,
+.comparison-scores-section,
+.efficiency-score-section,
+.causal-graph-section {
+    border: 1px solid #ccc;
+    padding: 15px;
+    margin-top: 15px;
+    margin-bottom: 20px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+}
+
+/* Common styling for section titles (h3/h4) */
+.root-cause-section h3, .root-cause-section h4,
+.resolution-section h3, .resolution-section h4,
+.comparison-scores-section h3, .comparison-scores-section h4,
+.efficiency-score-section h3, .efficiency-score-section h4,
+.causal-graph-section h3, .causal-graph-section h4 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+    color: #17a2b8; /* Consistent color */
+}
+
+.result-section p, .result-section ul { /* General paragraph/list styling within sections */
+    margin-left: 0; /* Reset margin */
+    line-height: 1.6;
+}
+
+.result-section strong { /* General strong tag styling */
+    color: #555;
+}
+
+
+/* Root Cause & Resolution common parts */
+.component-info {
+    margin-bottom: 10px;
+    font-size: 0.95em;
+    color: #333;
+}
+
+.component-info span {
+    display: inline-block;
+    margin-right: 15px;
+}
+
+.details-text {
+    line-height: 1.6;
+    color: #555;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* Comparison Scores */
+.comparison-scores-section ul.scores-list {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 10px;
+    margin-bottom: 0;
+}
+
+.comparison-scores-section .score-item {
+    margin-bottom: 8px;
+    font-size: 0.95em;
+    line-height: 1.5;
+}
+
+.comparison-scores-section .score-item:last-child {
+    margin-bottom: 0;
+}
+
+.comparison-scores-section .score-label {
+    font-weight: bold;
+    color: #333;
+    display: inline-block;
+    min-width: 150px; /* Align values */
+}
+
+.comparison-scores-section .score-value {
+    color: #555;
+}
+
+/* Efficiency Score */
+.efficiency-score-section .score-value {
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #333;
+    display: block;
+    margin-top: 5px;
+}
+
+/* Causal Graph */
+.graph-container {
+    width: 100%;
+    /* height is specific */
+    border: 1px solid #ccc; /* Common border */
+    margin-top: 10px; /* Common margin */
+    background-color: #fafafa; /* Common background */
+}
+
+/* Error Message Style */
+.error-message {
+    color: #dc3545;
+    font-weight: bold;
+    margin-top: 10px;
+    padding: 5px 10px; /* Adjusted padding */
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 4px;
+}

@@ -20,6 +20,41 @@ import llm_provider
 SCENARIOS_BASE_PATH = "scenarios"
 
 
+def initialize_evaluation_components() -> ScenarioEvaluatorOrchestrator:
+    """
+    Initializes and returns the core components for the evaluation pipeline.
+
+    Returns:
+        ScenarioEvaluatorOrchestrator: The configured orchestrator instance.
+
+    Raises:
+        Exception: If any component fails to initialize.
+    """
+    print("Initializing evaluation components...")
+    # Ensure the base path is correct relative to the project root
+    storage_config = {"base_path": SCENARIOS_BASE_PATH}
+    # Placeholder agent config - replace with actual configuration if needed
+
+    loader = ScenarioLoader(storage_config=storage_config)
+    llm = llm_provider.setup_llm()
+    # Replace LLMAgentAdapter if a different agent implementation is required
+    agent_config = {"llm": llm}
+    agent_adapter = BasicLLMAgentAdapter(agent_config=agent_config)
+    comparator = ResultComparator()
+    evaluator = EfficiencyEvaluator()
+    evaluation_writer = ScenarioEvaluationWriter(base_dir="bench_runs")
+
+    orchestrator = ScenarioEvaluatorOrchestrator(
+        scenario_loader=loader,
+        agent_interface=agent_adapter,
+        result_comparator=comparator,
+        efficiency_evaluator=evaluator,
+        evaluation_writer=evaluation_writer,
+    )
+    print("Components initialized successfully.")
+    return orchestrator
+
+
 def main():
     """
     Orchestrates the SRE Benchmark evaluation pipeline.
@@ -30,35 +65,11 @@ def main():
     print("Starting SRE Benchmark Evaluation Pipeline...")
     logging.basicConfig(level=logging.INFO, format="%(levelname)s:%(name)s:%(message)s")
 
-    # --- Configuration ---
-    # Ensure the base path is correct relative to the project root
-    storage_config = {"base_path": SCENARIOS_BASE_PATH}
-    # Placeholder agent config - replace with actual configuration if needed
-
-    # --- Component Instantiation ---
+    # --- Initialize Components ---
     try:
-        print("Initializing evaluation components...")
-        loader = ScenarioLoader(storage_config=storage_config)
-        llm = llm_provider.setup_llm()
-        # Replace LLMAgentAdapter if a different agent implementation is required
-        agent_config = {"llm": llm}
-        agent_adapter = BasicLLMAgentAdapter(agent_config=agent_config)
-        comparator = ResultComparator()
-        evaluator = EfficiencyEvaluator()
-        evaluation_writer = ScenarioEvaluationWriter(base_dir="bench_runs")
-
-        orchestrator = ScenarioEvaluatorOrchestrator(
-            scenario_loader=loader,
-            agent_interface=agent_adapter,
-            result_comparator=comparator,
-            efficiency_evaluator=evaluator,
-            evaluation_writer=evaluation_writer,
-        )
-        print("Components initialized successfully.")
-
+        orchestrator = initialize_evaluation_components()
     except Exception as e:
-        print(f"Error initializing components: {e}")
-        # Consider more specific exception handling if needed
+        print(f"Fatal Error: Could not initialize evaluation components: {e}")
         return  # Exit if components fail to initialize
 
     # --- Scenario Selection ---

@@ -130,6 +130,108 @@ class ScenarioEvaluatorOrchestrator:
 
         return scenario_results
 
+    def evaluate_custom_scenario(
+        self, scenario_data: dict, custom_scenario_name: str = "custom_run"
+    ) -> dict:
+        """
+        Runs the evaluation process for a custom scenario provided as data.
+
+        Args:
+            scenario_data (dict): The scenario data dictionary, matching the
+                                  structure produced by ScenarioLoader.
+            custom_scenario_name (str): A name for this custom evaluation run,
+                                        used for output directories/files.
+                                        Defaults to "custom_run".
+
+        Returns:
+            dict: A dictionary containing all the evaluation results.
+        """
+        print(
+            f"Orchestrator: Starting evaluation for custom scenario: {custom_scenario_name}"
+        )
+        scenario_results = {
+            "scenario_id": custom_scenario_name
+        }  # Use custom name as ID
+
+        try:
+            # 1. Validate Input Data (Basic Check)
+            if not all(
+                k in scenario_data for k in ["description", "state", "ground_truth"]
+            ):
+                raise ValueError(
+                    "Provided scenario_data is missing required top-level keys."
+                )
+
+            scenario_results["loaded_data_summary"] = {
+                "description_loaded": "description" in scenario_data,
+                "state_loaded": "state" in scenario_data,
+                "ground_truth_loaded": "ground_truth" in scenario_data,
+            }
+
+            # 2. Setup Scenario Directory and Interact with Agent
+            print("Orchestrator: Setting up scenario directory...")
+            # Use custom_scenario_name for the directory
+            self.evaluation_writer.setup_scenario_dir(custom_scenario_name)
+
+            print("Orchestrator: Interacting with agent...")
+            self.efficiency_evaluator.start_timer()
+            agent_output = self.agent_interface.interact_with_agent(scenario_data)
+            efficiency_score = self.efficiency_evaluator.stop_timer_and_evaluate()
+            scenario_results["agent_output"] = agent_output
+
+            # Write agent output
+            print("Orchestrator: Writing agent output...")
+            try:
+                agent_output_content = json.dumps(agent_output, indent=2)
+                self.evaluation_writer.write_ground_truth(
+                    custom_scenario_name, "agent_output.json", agent_output_content
+                )
+            except TypeError as e:
+                print(
+                    f"Orchestrator Warning: Could not serialize agent output to JSON: {e}"
+                )
+                self.evaluation_writer.write_ground_truth(
+                    custom_scenario_name, "agent_output.txt", str(agent_output)
+                )
+
+            # 3. Compare Results
+            print("Orchestrator: Comparing agent output with ground truth...")
+            if "ground_truth" in scenario_data:
+                comparison_scores = self.result_comparator.compare(
+                    agent_output=agent_output,
+                    ground_truth=scenario_data["ground_truth"],
+                )
+                scenario_results["comparison_scores"] = comparison_scores
+            else:
+                # This case might be less common for custom scenarios but handle it
+                print(
+                    "Orchestrator: Ground truth not provided in custom data, skipping comparison."
+                )
+                scenario_results["comparison_scores"] = {
+                    "error": "Ground truth not provided in custom data"
+                }
+
+            # 4. Evaluate Efficiency
+            print("Orchestrator: Evaluating efficiency...")
+            scenario_results["efficiency_score"] = efficiency_score
+
+        except ValueError as e:  # Catch specific validation errors
+            print(f"Orchestrator Error: Invalid input data: {e}")
+            scenario_results["error"] = f"Invalid input data: {e}"
+        except Exception as e:
+            print(f"Orchestrator Error: An unexpected error occurred: {e}")
+            scenario_results["error"] = f"An unexpected error occurred: {e}"
+
+        print(
+            f"Orchestrator: Finished evaluation for custom scenario: {custom_scenario_name}"
+        )
+
+        # 5. Write Final Results
+        print("Orchestrator: Writing final results...")
+        self.evaluation_writer.write_results(custom_scenario_name, scenario_results)
+
+        return scenario_results
+
 
 # Example Usage (for testing purposes)
 if __name__ == "__main__":
