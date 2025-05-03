@@ -151,3 +151,30 @@ body {
     border: 1px solid #f5c6cb;
     border-radius: 4px;
 }
+/* Navigation menu styles */
+nav ul {
+    list-style: none; /* Remove default list styles */
+    padding: 0;
+    margin: 0;
+    display: flex; /* Align items horizontally */
+    justify-content: space-around; /* Space items evenly */
+    background-color: #0056b3; /* Consistent with heading color */
+    border-radius: 5px; /* Rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+nav ul li {
+    margin: 0;
+    padding: 10px 15px; /* Add spacing for clickable area */
+}
+
+nav ul li a {
+    text-decoration: none; /* Remove underline */
+    color: #fff; /* White text for contrast */
+    font-weight: bold;
+    transition: color 0.3s ease; /* Smooth hover effect */
+}
+
+nav ul li a:hover {
+    color: #ffcc00; /* Highlight color on hover */
+}

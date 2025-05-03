@@ -99,6 +99,12 @@ def serve_browse_results():
     return send_from_directory(RESULTS_VIEWER_DIR, "browse_results.html")
 
 
+@app.route("/")
+def home():
+    """Serve the home page."""
+    return send_from_directory(RESULTS_VIEWER_DIR, "home.html")
+
+
 # --- Helper Function for Reading Scenario Files ---
 
 
