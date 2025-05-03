@@ -36,7 +36,7 @@ class ScenarioEvaluationWriter:
         )
         return self.run_dir / safe_scenario_name
 
-    def setup_scenario_dir(self, scenario_name: str) -> Path:
+    def _setup_scenario_dir(self, scenario_name: str) -> Path:
         """
         Creates a directory for a specific scenario within the current run.
 
@@ -76,7 +76,7 @@ class ScenarioEvaluationWriter:
             OSError: If directory creation fails.
         """
         self._create_base_dir()  # Ensure base directory is created
-        scenario_path = self.setup_scenario_dir(scenario_name)  # Ensure dir exists
+        scenario_path = self._setup_scenario_dir(scenario_name)  # Ensure dir exists
         results_path = scenario_path / "results.json"
 
         try:

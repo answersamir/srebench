@@ -6,53 +6,10 @@ import json
 import logging
 import os
 
-from basic_agent.basic_agent_adapter import BasicLLMAgentAdapter
-from eval_pipeline.evaluation_writer import ScenarioEvaluationWriter
-from eval_pipeline.efficiency_evaluator import EfficiencyEvaluator
-from eval_pipeline.result_comparator import ResultComparator
-from eval_pipeline.scenario_evaluator_orchestrator import (
-    ScenarioEvaluatorOrchestrator,
-)
-from eval_pipeline.scenario_loader import ScenarioLoader
-import llm_provider
+from orechestrator_builder import initialize_evaluation_components
 
 # Define the base path for scenarios relative to the project root
 SCENARIOS_BASE_PATH = "scenarios"
-
-
-def initialize_evaluation_components() -> ScenarioEvaluatorOrchestrator:
-    """
-    Initializes and returns the core components for the evaluation pipeline.
-
-    Returns:
-        ScenarioEvaluatorOrchestrator: The configured orchestrator instance.
-
-    Raises:
-        Exception: If any component fails to initialize.
-    """
-    print("Initializing evaluation components...")
-    # Ensure the base path is correct relative to the project root
-    storage_config = {"base_path": SCENARIOS_BASE_PATH}
-    # Placeholder agent config - replace with actual configuration if needed
-
-    loader = ScenarioLoader(storage_config=storage_config)
-    llm = llm_provider.setup_llm()
-    # Replace LLMAgentAdapter if a different agent implementation is required
-    agent_config = {"llm": llm}
-    agent_adapter = BasicLLMAgentAdapter(agent_config=agent_config)
-    comparator = ResultComparator()
-    evaluator = EfficiencyEvaluator()
-    evaluation_writer = ScenarioEvaluationWriter(base_dir="bench_runs")
-
-    orchestrator = ScenarioEvaluatorOrchestrator(
-        scenario_loader=loader,
-        agent_interface=agent_adapter,
-        result_comparator=comparator,
-        efficiency_evaluator=evaluator,
-        evaluation_writer=evaluation_writer,
-    )
-    print("Components initialized successfully.")
-    return orchestrator
 
 
 def main():
@@ -67,7 +24,7 @@ def main():
 
     # --- Initialize Components ---
     try:
-        orchestrator = initialize_evaluation_components()
+        orchestrator = initialize_evaluation_components(base_path=SCENARIOS_BASE_PATH)
     except Exception as e:
         print(f"Fatal Error: Could not initialize evaluation components: {e}")
         return  # Exit if components fail to initialize

@@ -132,10 +132,10 @@ class ScenarioLoader:
 
 # Example Usage (for testing purposes)
 if __name__ == "__main__":
-    loader = ScenarioLoader(storage_config={"base_path": "../scenarios"})
+    loader = ScenarioLoader(storage_config={"base_path": "./src/scenarios"})
     try:
-        scenario_data = loader.load_scenario("scenario_cpu_limit_001")
-        print("Successfully loaded scenario_cpu_limit_001")
+        scenario_data = loader.load_scenario("scenario_001")
+        print("Successfully loaded scenario_001")
         # print(scenario_data) # Uncomment to see loaded data
     except FileNotFoundError as e:
         print(e)

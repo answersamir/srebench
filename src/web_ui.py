@@ -9,8 +9,8 @@ import io
 from typing import Dict, Any, List, Optional
 import logging  # Added for logging
 import os
-from flask import Flask, request, jsonify, send_from_directory, render_template
-from .main import initialize_evaluation_components
+from flask import Flask, request, jsonify, send_from_directory
+from orechestrator_builder import initialize_evaluation_components
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -18,17 +18,35 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
+# Define the path to the results_viewer directory relative to this script's location
+# Assuming web_ui.py is in src/ and results_viewer is also in src/
+RESULTS_VIEWER_DIR = os.path.join(os.path.dirname(__file__), "results_viewer")
+logger.info(f"RESULTS_VIEWER_DIR is set to: {RESULTS_VIEWER_DIR}")
+# Define the base directory for scenarios relative to this script
+SCENARIOS_BASE_DIR = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "scenarios")
+)
+logger.info(f"Scenarios base directory: {SCENARIOS_BASE_DIR}")
+# Define the path to the evaluation results directory
+# Assumes web_ui.py is in src/ and eval_results/ is at the project root
+EVAL_RESULTS_DIR = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), "..", "bench_runs")
+)
+logger.info(f"Evaluation results directory: {EVAL_RESULTS_DIR}")
+
 # --- Global Orchestrator Instance ---
 # Initialize components once when the app starts.
 # This avoids re-initializing the LLM and other components on every request.
 # Note: In a production scenario with multiple workers, consider if shared state
 # needs more sophisticated handling (e.g., lazy initialization per worker).
 try:
-    orchestrator = initialize_evaluation_components()
+    orchestrator = initialize_evaluation_components(
+        scenario_base_path=SCENARIOS_BASE_DIR
+    )
 except Exception as e:
     # Log the error and potentially prevent the app from starting
     # or set orchestrator to None and handle it in the request.
-    logging.critical(f"Failed to initialize evaluation components on startup: {e}")
+    logger.critical(f"Failed to initialize evaluation components on startup: {e}")
     orchestrator = None  # Indicate initialization failure
 
 
@@ -46,26 +64,21 @@ def parse_jsonl(jsonl_content: str) -> List[Dict[str, Any]]:
 
 # --- Static File Serving ---
 
-# Define the path to the results_viewer directory relative to this script's location
-# Assuming web_ui.py is in src/ and results_viewer is also in src/
-RESULTS_VIEWER_DIR = os.path.join(os.path.dirname(__file__), "results_viewer")
-logging.info(f"RESULTS_VIEWER_DIR is set to: {RESULTS_VIEWER_DIR}")
-
 
 @app.route("/custom")
 def serve_custom_scenario():
     """Serves the main custom_scenario.html file."""
-    logging.debug(f"Attempting to serve custom_scenario.html from {RESULTS_VIEWER_DIR}")
+    logger.debug(f"Attempting to serve custom_scenario.html from {RESULTS_VIEWER_DIR}")
     return send_from_directory(RESULTS_VIEWER_DIR, "custom_scenario.html")
 
 
 @app.route("/custom/<path:filename>")
 def serve_custom_static(filename):
     """Serves static files (JS, CSS) requested by custom_scenario.html."""
-    logging.debug(
+    logger.debug(
         f"Attempting to serve static file {filename} from {RESULTS_VIEWER_DIR}"
     )
-    # logging.debug(f"Serving static file: {filename} from directory: {RESULTS_VIEWER_DIR}") # Redundant log
+    # logger.debug(f"Serving static file: {filename} from directory: {RESULTS_VIEWER_DIR}") # Redundant log
     return send_from_directory(RESULTS_VIEWER_DIR, filename)
 
 
@@ -75,28 +88,16 @@ def serve_custom_static(filename):
 @app.route("/run_benchmark")
 def serve_run_benchmark():
     """Serves the run_bench.html page."""
-    logging.debug(f"Attempting to serve run_bench.html from {RESULTS_VIEWER_DIR}")
+    logger.debug(f"Attempting to serve run_bench.html from {RESULTS_VIEWER_DIR}")
     return send_from_directory(RESULTS_VIEWER_DIR, "run_bench.html")
 
 
 @app.route("/browse_results")
 def serve_browse_results():
     """Serves the browse_results.html page."""
-    logging.debug(f"Attempting to serve browse_results.html from {RESULTS_VIEWER_DIR}")
+    logger.debug(f"Attempting to serve browse_results.html from {RESULTS_VIEWER_DIR}")
     return send_from_directory(RESULTS_VIEWER_DIR, "browse_results.html")
 
-
-# Define the base directory for scenarios relative to this script
-SCENARIOS_BASE_DIR = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "scenarios")
-)
-logging.info(f"Scenarios base directory: {SCENARIOS_BASE_DIR}")
-# Define the path to the evaluation results directory
-# Assumes web_ui.py is in src/ and eval_results/ is at the project root
-EVAL_RESULTS_DIR = os.path.abspath(
-    os.path.join(os.path.dirname(__file__), "..", "bench_runs")
-)
-logging.info(f"Evaluation results directory: {EVAL_RESULTS_DIR}")
 
 # --- Helper Function for Reading Scenario Files ---
 
@@ -116,13 +117,13 @@ def _read_scenario_file(file_path: str) -> Optional[str]:
             with open(file_path, "r", encoding="utf-8") as f:
                 return f.read()
         else:
-            logging.warning(f"Scenario file not found or is not a file: {file_path}")
+            logger.warning(f"Scenario file not found or is not a file: {file_path}")
             return None
     except IOError as e:
-        logging.error(f"Error reading scenario file {file_path}: {e}")
+        logger.error(f"Error reading scenario file {file_path}: {e}")
         return None
     except Exception as e:
-        logging.error(f"Unexpected error reading file {file_path}: {e}")
+        logger.error(f"Unexpected error reading file {file_path}: {e}")
         return None
 
 
@@ -132,9 +133,9 @@ def _read_scenario_file(file_path: str) -> Optional[str]:
 @app.route("/api/scenarios", methods=["GET"])
 def list_scenarios():
     """Lists available scenario IDs based on subdirectories."""
-    logging.info(f"Request received for /api/scenarios. Scanning {SCENARIOS_BASE_DIR}")
+    logger.info(f"Request received for /api/scenarios. Scanning {SCENARIOS_BASE_DIR}")
     if not os.path.exists(SCENARIOS_BASE_DIR) or not os.path.isdir(SCENARIOS_BASE_DIR):
-        logging.error(f"Scenarios directory not found: {SCENARIOS_BASE_DIR}")
+        logger.error(f"Scenarios directory not found: {SCENARIOS_BASE_DIR}")
         return jsonify({"error": "Scenarios directory not found on server."}), 500
 
     try:
@@ -143,20 +144,22 @@ def list_scenarios():
             for d in os.listdir(SCENARIOS_BASE_DIR)
             if os.path.isdir(os.path.join(SCENARIOS_BASE_DIR, d))
         ]
-        logging.info(f"Found scenarios: {scenario_ids}")
+        logger.info(f"Found scenarios: {scenario_ids}")
         return jsonify(scenario_ids)
     except OSError as e:
-        logging.error(f"Error reading scenarios directory {SCENARIOS_BASE_DIR}: {e}")
+        logger.error(f"Error reading scenarios directory {SCENARIOS_BASE_DIR}: {e}")
         return jsonify({"error": "Could not read scenarios directory."}), 500
     except Exception as e:
-        logging.error(f"Unexpected error listing scenarios: {e}")
+        logger.error(f"Unexpected error listing scenarios: {e}")
         return jsonify({"error": "An unexpected error occurred."}), 500
 
 
 @app.route("/api/scenarios/<scenario_id>", methods=["GET"])
 def get_scenario_data(scenario_id: str):
     """Retrieves the content of all files for a given scenario."""
-    logging.info(f"Request received for /api/scenarios/{scenario_id}")
+    logger.info(f"Request received for /api/scenarios/{scenario_id}")
+    logger.debug(f"SCENARIOS_BASE_DIR: {SCENARIOS_BASE_DIR}")
+    logger.debug(f"Validating scenario_id: {scenario_id}")
 
     # Basic input validation for scenario_id to prevent path traversal
     if (
@@ -165,14 +168,22 @@ def get_scenario_data(scenario_id: str):
         or "/" in scenario_id
         or "\\" in scenario_id
     ):
-        logging.warning(f"Invalid scenario_id requested: {scenario_id}")
+        logger.warning(f"Invalid scenario_id requested: {scenario_id}")
         return jsonify({"error": "Invalid scenario ID format."}), 400
 
     scenario_path = os.path.join(SCENARIOS_BASE_DIR, scenario_id)
-    logging.info(f"Constructed scenario path: {scenario_path}")
+    logger.info(f"Constructed scenario path: {scenario_path}")
+    logger.debug(f"Checking if scenario path exists: {scenario_path}")
+    if os.path.exists(scenario_path):
+        logger.debug(f"Scenario path exists: {scenario_path}")
+    else:
+        logger.debug(f"Scenario path does not exist: {scenario_path}")
+        logger.debug(
+            f"Directory listing for SCENARIOS_BASE_DIR: {os.listdir(SCENARIOS_BASE_DIR) if os.path.exists(SCENARIOS_BASE_DIR) else 'SCENARIOS_BASE_DIR does not exist'}"
+        )
 
     if not os.path.exists(scenario_path) or not os.path.isdir(scenario_path):
-        logging.warning(f"Scenario directory not found: {scenario_path}")
+        logger.warning(f"Scenario directory not found: {scenario_path}")
         return jsonify({"error": f"Scenario '{scenario_id}' not found."}), 404
 
     # Define the files and their corresponding keys in the response JSON
@@ -190,7 +201,7 @@ def get_scenario_data(scenario_id: str):
 
     scenario_content: Dict[str, Optional[str]] = {}
 
-    logging.info(f"Reading files for scenario: {scenario_id}")
+    logger.info(f"Reading files for scenario: {scenario_id}")
     for key, relative_path in files_to_read.items():
         full_file_path = os.path.join(scenario_path, relative_path)
         content = _read_scenario_file(full_file_path)
@@ -199,7 +210,7 @@ def get_scenario_data(scenario_id: str):
     # Check if at least one file was successfully read (optional, depends on requirements)
     if all(value is None for value in scenario_content.values()):
         # This might happen if the directory exists but is empty or contains none of the expected files
-        logging.warning(
+        logger.warning(
             f"No relevant files found or readable in scenario directory: {scenario_path}"
         )
         # Decide whether to return 404 or an empty object based on desired behavior
@@ -211,16 +222,16 @@ def get_scenario_data(scenario_id: str):
             404,
         )
 
-    logging.info(f"Successfully retrieved data for scenario: {scenario_id}")
+    logger.info(f"Successfully retrieved data for scenario: {scenario_id}")
     return jsonify(scenario_content)
 
 
 @app.route("/api/list_runs", methods=["GET"])
 def list_runs():
     """Lists available benchmark run IDs based on subdirectories in EVAL_RESULTS_DIR."""
-    logging.info(f"Request received for /api/list_runs. Scanning {EVAL_RESULTS_DIR}")
+    logger.info(f"Request received for /api/list_runs. Scanning {EVAL_RESULTS_DIR}")
     if not os.path.exists(EVAL_RESULTS_DIR) or not os.path.isdir(EVAL_RESULTS_DIR):
-        logging.warning(f"Evaluation results directory not found: {EVAL_RESULTS_DIR}")
+        logger.warning(f"Evaluation results directory not found: {EVAL_RESULTS_DIR}")
         # Return empty list if dir doesn't exist, as the frontend might expect an array
         return jsonify([])
 
@@ -232,13 +243,13 @@ def list_runs():
         ]
         # Sort runs for consistent ordering, perhaps reverse chronologically if names allow
         run_ids.sort(reverse=True)
-        logging.info(f"Found runs: {run_ids}")
+        logger.info(f"Found runs: {run_ids}")
         return jsonify(run_ids)
     except OSError as e:
-        logging.error(f"Error reading results directory {EVAL_RESULTS_DIR}: {e}")
+        logger.error(f"Error reading results directory {EVAL_RESULTS_DIR}: {e}")
         return jsonify({"error": "Could not read evaluation results directory."}), 500
     except Exception as e:
-        logging.error(f"Unexpected error listing runs: {e}")
+        logger.error(f"Unexpected error listing runs: {e}")
         return jsonify({"error": "An unexpected error occurred."}), 500
 
 
@@ -249,60 +260,60 @@ def get_run_results():
     within a specific benchmark run.
     """
     run_id = request.args.get("run_id")
-    logging.info(f"Request received for /api/get_run_results with run_id: {run_id}")
-    logging.debug(f"Starting get_run_results for run_id: {run_id}")
+    logger.info(f"Request received for /api/get_run_results with run_id: {run_id}")
+    logger.debug(f"Starting get_run_results for run_id: {run_id}")
 
     # --- Input Validation ---
     if not run_id:
-        logging.warning("Missing 'run_id' query parameter.")
+        logger.warning("Missing 'run_id' query parameter.")
         return jsonify({"error": "Missing 'run_id' query parameter."}), 400
 
     # Basic security check to prevent path traversal
     if ".." in run_id or "/" in run_id or "\\" in run_id:
-        logging.warning(f"Invalid characters detected in run_id: {run_id}")
+        logger.warning(f"Invalid characters detected in run_id: {run_id}")
         return jsonify({"error": "Invalid run_id format."}), 400
 
     # --- Path Construction and Directory Check ---
     run_dir_path = os.path.join(EVAL_RESULTS_DIR, run_id)
-    logging.debug(f"Constructed run directory path: {run_dir_path}")
+    logger.debug(f"Constructed run directory path: {run_dir_path}")
 
     run_dir_exists = os.path.exists(run_dir_path)
     run_dir_is_dir = os.path.isdir(run_dir_path)
-    logging.debug(
+    logger.debug(
         f"Check results for {run_dir_path}: exists={run_dir_exists}, isdir={run_dir_is_dir}"
     )
 
     if not run_dir_exists or not run_dir_is_dir:
-        logging.warning(f"Run directory not found: {run_dir_path}")
+        logger.warning(f"Run directory not found: {run_dir_path}")
         return jsonify({"error": f"Run '{run_id}' not found."}), 404
 
     # --- Aggregate Scenario Results ---
     all_scenario_data: List[Dict[str, Any]] = []
     try:
-        logging.debug(f"Listing contents of run directory: {run_dir_path}")
+        logger.debug(f"Listing contents of run directory: {run_dir_path}")
         for item_name in os.listdir(run_dir_path):
-            logging.debug(f"Found item in run directory: {item_name}")
+            logger.debug(f"Found item in run directory: {item_name}")
             scenario_dir_path = os.path.join(run_dir_path, item_name)
-            logging.debug(f"Constructed scenario directory path: {scenario_dir_path}")
+            logger.debug(f"Constructed scenario directory path: {scenario_dir_path}")
 
             # Check if it's a directory (potential scenario directory)
             scenario_dir_is_dir = os.path.isdir(scenario_dir_path)
-            logging.debug(
+            logger.debug(
                 f"Check results for {scenario_dir_path}: isdir={scenario_dir_is_dir}"
             )
 
             if scenario_dir_is_dir:
                 results_file_path = os.path.join(scenario_dir_path, "results.json")
-                logging.debug(f"Constructed results file path: {results_file_path}")
+                logger.debug(f"Constructed results file path: {results_file_path}")
 
                 results_file_exists = os.path.exists(results_file_path)
                 results_file_is_file = os.path.isfile(results_file_path)
-                logging.debug(
+                logger.debug(
                     f"Check results for {results_file_path}: exists={results_file_exists}, isfile={results_file_is_file}"
                 )
 
                 if results_file_exists and results_file_is_file:
-                    logging.debug(
+                    logger.debug(
                         f"Attempting to read results file: {results_file_path}"
                     )
                     try:
@@ -311,42 +322,42 @@ def get_run_results():
                             # Optionally add scenario name if needed later
                             # scenario_result['scenario_id'] = item_name
                             all_scenario_data.append(scenario_result)
-                            logging.debug(
+                            logger.debug(
                                 f"Successfully loaded results from {results_file_path}"
                             )
                     except json.JSONDecodeError as e:
-                        logging.warning(
+                        logger.warning(
                             f"Failed to parse JSON in {results_file_path}: {e}. Skipping file."
                         )
                     except IOError as e:
-                        logging.warning(
+                        logger.warning(
                             f"Failed to read file {results_file_path}: {e}. Skipping file."
                         )
                     except Exception as e:
-                        logging.warning(
+                        logger.warning(
                             f"Unexpected error processing file {results_file_path}: {e}. Skipping file."
                         )
                 else:
-                    logging.debug(
+                    logger.debug(
                         f"Results file not found or is not a file: {results_file_path}"
                     )
 
     except OSError as e:
-        logging.error(f"Error listing contents of run directory {run_dir_path}: {e}")
+        logger.error(f"Error listing contents of run directory {run_dir_path}: {e}")
         return jsonify({"error": "Failed to read run directory contents."}), 500
     except Exception as e:
-        logging.error(f"Unexpected error processing run '{run_id}': {e}", exc_info=True)
+        logger.error(f"Unexpected error processing run '{run_id}': {e}", exc_info=True)
         return jsonify({"error": "An unexpected server error occurred."}), 500
 
     # --- Check if any results were found ---
     if not all_scenario_data:
-        logging.warning(
+        logger.warning(
             f"No valid scenario results found in run '{run_id}'. Returning 404."
         )
         return jsonify({"error": f"No scenario results found for run '{run_id}'."}), 404
 
     # --- Construct Final Response ---
-    logging.debug(
+    logger.debug(
         f"Aggregating {len(all_scenario_data)} scenario results for run '{run_id}'."
     )
 
@@ -373,11 +384,41 @@ def get_run_results():
         "scenarios": all_scenario_data,
     }
 
-    logging.info(
+    logger.info(
         f"Successfully aggregated results for run '{run_id}'. Returning aggregated data."
     )
-    logging.info(f"Returning aggregated results: {aggregated_results}")
+    logger.info(f"Returning aggregated results: {aggregated_results}")
     return jsonify(aggregated_results)
+
+
+@app.route("/api/run_benchmark", methods=["POST"])
+def run_benchmark():
+    """
+    Endpoint to start a benchmark run.
+    This endpoint is called by the frontend to initiate a benchmark process.
+    """
+    logger.info("Received request to start benchmark.")
+    # Check if orchestrator is initialized
+    if orchestrator is None:
+        logger.error("Orchestrator not initialized. Cannot start benchmark.")
+        return jsonify(
+            {
+                "error": "Benchmark service is not available due to initialization failure."
+            }
+        ), 503
+
+    try:
+        scenario_id_to_evaluate = "scenario_001"  # Placeholder for actual scenario ID
+        logger.info(f"\nRunning evaluation for scenario: {scenario_id_to_evaluate}...")
+        _ = orchestrator.evaluate_scenario(scenario_id_to_evaluate)
+        logger.info("Evaluation completed.")
+        logger.info("Benchmark started successfully")
+        return jsonify({"message": "Benchmark started successfully."}), 200
+    except Exception as e:
+        logger.error(f"Error starting benchmark: {e}", exc_info=True)
+        return jsonify(
+            {"error": "An unexpected error occurred while starting the benchmark."}
+        ), 500
 
 
 # --- API Endpoints ---
@@ -389,9 +430,9 @@ def evaluate_scenario():
     Endpoint to evaluate a custom scenario provided in the request body.
     Expects a JSON payload with scenario details.
     """
-    logging.info("Received request to evaluate custom scenario.")
+    logger.info("Received request to evaluate custom scenario.")
     if orchestrator is None:
-        logging.error("Orchestrator not initialized. Cannot evaluate scenario.")
+        logger.error("Orchestrator not initialized. Cannot evaluate scenario.")
         return (
             jsonify(
                 {
@@ -402,11 +443,11 @@ def evaluate_scenario():
         )  # Service Unavailable
 
     if not request.is_json:
-        logging.warning("Received non-JSON request for /evaluate endpoint.")
+        logger.warning("Received non-JSON request for /evaluate endpoint.")
         return jsonify({"error": "Request must be JSON"}), 400
 
     data = request.get_json()
-    logging.debug(
+    logger.debug(
         "Received scenario data payload."
     )  # Use debug for potentially large data
 
@@ -465,12 +506,10 @@ def evaluate_scenario():
         root_cause = ground_truth_files_content["root_cause.json"]
 
     except (json.JSONDecodeError, yaml.YAMLError, ValueError, KeyError) as e:
-        logging.error(f"Error parsing input data: {e}", exc_info=True)
+        logger.error(f"Error parsing input data: {e}", exc_info=True)
         return jsonify({"error": f"Error parsing input data: {e}"}), 400
     except Exception as e:  # Catch unexpected errors during parsing
-        logging.error(
-            f"An unexpected error occurred during parsing: {e}", exc_info=True
-        )
+        logger.error(f"An unexpected error occurred during parsing: {e}", exc_info=True)
         return (
             jsonify({"error": f"An unexpected error occurred during parsing: {e}"}),
             500,
@@ -498,7 +537,7 @@ def evaluate_scenario():
         # Generate a unique name for this run if desired, or use a default
         custom_run_name = f"custom_run_{request.headers.get('X-Request-ID', 'default')}"
 
-        logging.info(
+        logger.info(
             f"Calling orchestrator.evaluate_custom_scenario for '{custom_run_name}'"
         )
         # Call the method directly on the orchestrator instance
@@ -506,23 +545,23 @@ def evaluate_scenario():
             scenario_data=scenario_data,  # Consider logging parts of this if needed for debug, but be wary of size
             custom_scenario_name=custom_run_name,
         )
-        logging.info(f"Orchestrator evaluation finished for '{custom_run_name}'.")
+        logger.info(f"Orchestrator evaluation finished for '{custom_run_name}'.")
 
         # Check if the evaluation itself resulted in an error
         if "error" in evaluation_results:
-            logging.error(
+            logger.error(
                 f"Evaluation orchestrator returned an error: {evaluation_results['error']}"
             )
             # Return the error from the orchestrator
             return jsonify(evaluation_results), 500
         else:
-            logging.info(
+            logger.info(
                 f"Evaluation successful for '{custom_run_name}'. Returning results."
             )
             return jsonify(evaluation_results), 200
 
     except Exception as e:
-        logging.error(
+        logger.error(
             f"An unexpected error occurred during scenario evaluation: {e}",
             exc_info=True,
         )
@@ -536,7 +575,5 @@ if __name__ == "__main__":
     # In a production deployment, a production-ready WSGI server like Gunicorn
     # should be used instead of Flask's built-in server.
     # Example: gunicorn -w 4 'src.web_ui:app'
-    logging.basicConfig(
-        level=logging.DEBUG
-    )  # Set logging level to DEBUG for development
+    logger.basicConfig(level=logger.DEBUG)  # Set logging level to DEBUG for development
     app.run(debug=True, port=5000)

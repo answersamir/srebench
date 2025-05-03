@@ -69,10 +69,6 @@ class ScenarioEvaluatorOrchestrator:
                 "ground_truth_loaded": "ground_truth" in scenario_data,
             }
 
-            # 2. Setup Scenario Directory and Interact with Agent
-            print("Orchestrator: Setting up scenario directory...")
-            self.evaluation_writer.setup_scenario_dir(scenario_id)
-
             print("Orchestrator: Interacting with agent...")
             self.efficiency_evaluator.start_timer()  # Start timer before agent interaction
             agent_output = self.agent_interface.interact_with_agent(scenario_data)
@@ -80,7 +76,7 @@ class ScenarioEvaluatorOrchestrator:
             efficiency_score = self.efficiency_evaluator.stop_timer_and_evaluate()
             scenario_results["agent_output"] = agent_output
 
-            # 3. Compare Results
+            # 2. Compare Results
             print("Orchestrator: Comparing agent output with ground truth...")
             if "ground_truth" in scenario_data:
                 comparison_scores = self.result_comparator.compare(
@@ -94,7 +90,7 @@ class ScenarioEvaluatorOrchestrator:
                     "error": "Ground truth not available"
                 }
 
-            # 4. Evaluate Efficiency
+            # 3. Evaluate Efficiency
             print("Orchestrator: Evaluating efficiency...")
             # Efficiency score was obtained when timer was stopped (line 71)
             scenario_results["efficiency_score"] = efficiency_score
@@ -108,7 +104,7 @@ class ScenarioEvaluatorOrchestrator:
 
         print(f"Orchestrator: Finished evaluation for scenario: {scenario_id}")
 
-        # 5. Write Final Results
+        # 4. Write Final Results
         print("Orchestrator: Writing final results...")
         self.evaluation_writer.write_results(scenario_id, scenario_results)
 
@@ -152,18 +148,13 @@ class ScenarioEvaluatorOrchestrator:
                 "ground_truth_loaded": "ground_truth" in scenario_data,
             }
 
-            # 2. Setup Scenario Directory and Interact with Agent
-            print("Orchestrator: Setting up scenario directory...")
-            # Use custom_scenario_name for the directory
-            self.evaluation_writer.setup_scenario_dir(custom_scenario_name)
-
             print("Orchestrator: Interacting with agent...")
             self.efficiency_evaluator.start_timer()
             agent_output = self.agent_interface.interact_with_agent(scenario_data)
             efficiency_score = self.efficiency_evaluator.stop_timer_and_evaluate()
             scenario_results["agent_output"] = agent_output
 
-            # 3. Compare Results
+            # 2. Compare Results
             print("Orchestrator: Comparing agent output with ground truth...")
             if "ground_truth" in scenario_data:
                 comparison_scores = self.result_comparator.compare(
@@ -180,7 +171,7 @@ class ScenarioEvaluatorOrchestrator:
                     "error": "Ground truth not provided in custom data"
                 }
 
-            # 4. Evaluate Efficiency
+            # 3. Evaluate Efficiency
             print("Orchestrator: Evaluating efficiency...")
             scenario_results["efficiency_score"] = efficiency_score
 
@@ -195,7 +186,7 @@ class ScenarioEvaluatorOrchestrator:
             f"Orchestrator: Finished evaluation for custom scenario: {custom_scenario_name}"
         )
 
-        # 5. Write Final Results
+        # 4. Write Final Results
         print("Orchestrator: Writing final results...")
         self.evaluation_writer.write_results(custom_scenario_name, scenario_results)
 
