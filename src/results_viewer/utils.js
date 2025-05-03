@@ -270,10 +270,10 @@ function initializeVisGraph(container, graphData, scenarioId) {
                  enabled: false // Disable physics for hierarchical layout
              },
              interaction: {
-                 dragNodes: false,
-                 dragView: true, // Allow panning
-                 zoomView: true, // Allow zooming
-                 selectable: true, // Allow selection
+                 dragNodes: false, // Disable node dragging
+                 dragView: false, // Disable panning
+                 zoomView: false, // Disable zooming
+                 selectable: false, // Also disable selection as interaction is off
                  hover: true,
                  tooltipDelay: 200
              }

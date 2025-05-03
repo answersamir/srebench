@@ -26,13 +26,24 @@ label {
 }
 
 textarea {
-    width: 95%; /* Slightly less than 100% to prevent overflow */
+    width: 100%; /* Expand to fill container width */
+    box-sizing: border-box; /* Include padding and border in the element's total width and height */
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #ddd; /* Slightly softer border */
     border-radius: 4px;
     font-family: monospace; /* Good for code/JSON */
     font-size: 0.9em;
-    resize: vertical; /* Allow vertical resizing */
+    /* resize: vertical; */ /* Removed for auto-resizing */
+    overflow-y: hidden; /* Hide vertical scrollbar during auto-resize */
+    min-height: 100px; /* Set a minimum height */
+    background-color: #fdfdfd; /* Slightly off-white background */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for focus */
+}
+
+textarea:focus {
+    outline: none;
+    border-color: #007bff; /* Highlight border on focus */
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25); /* Add a subtle glow on focus */
 }
 
 button {
@@ -127,6 +138,6 @@ button:disabled {
 /* Ensure the graph container inside results fills its space */
 #results-display .graph-container { /* More specific selector */
     width: 100%;
-    height: 400px; /* Adjust height as needed */
+    height: 600px; /* Increased height (1.5x) */
     border: 1px solid #ddd; /* Keep border */
 }

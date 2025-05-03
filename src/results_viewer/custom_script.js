@@ -5,6 +5,23 @@ document.addEventListener('DOMContentLoaded', () => {
     // const resultOutput = document.getElementById('result-output').querySelector('code'); // Old output
     const resultsDisplayDiv = document.getElementById('results-display'); // New output container
 
+// --- Textarea Auto-Resizing Logic ---
+    function autoResizeTextarea(textarea) {
+        // Temporarily shrink height to get accurate scrollHeight
+        textarea.style.height = 'auto';
+        // Set height to scrollHeight to fit content, adding a small buffer if needed (e.g., 2px)
+        textarea.style.height = (textarea.scrollHeight) + 'px';
+    }
+
+    // Apply resizing to all textareas within the form
+    const textareas = form.querySelectorAll('textarea');
+    textareas.forEach(textarea => {
+        // Initial resize on load
+        autoResizeTextarea(textarea);
+        // Resize on input
+        textarea.addEventListener('input', () => autoResizeTextarea(textarea));
+    });
+    // --- End Textarea Auto-Resizing Logic ---
     // Input fields
     const descriptionInput = document.getElementById('description');
     const metadataInput = document.getElementById('metadata');
@@ -67,6 +84,10 @@ document.addEventListener('DOMContentLoaded', () => {
         causalGraphInput.value = data.causal_graph || '{}';
         resolutionInput.value = data.resolution || '{}';
         rootCauseInput.value = data.root_cause || '{}';
+
+        // Trigger resize for all textareas after filling
+        const allTextareas = form.querySelectorAll('textarea');
+        allTextareas.forEach(textarea => autoResizeTextarea(textarea));
     }
 
     /**
